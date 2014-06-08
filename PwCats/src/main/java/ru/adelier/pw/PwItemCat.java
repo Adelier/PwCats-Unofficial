@@ -66,4 +66,14 @@ public class PwItemCat extends PwItem {
         result = 31 * result + location.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PwItemCat{" +
+                "nickname='" + nickname + '\'' +
+                ", catTitle='" + catTitle + '\'' +
+                ", coord=" + coord +
+                ", location=" + location +
+                "} " + super.toString();
+    }
 }

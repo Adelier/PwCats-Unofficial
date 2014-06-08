@@ -72,4 +72,16 @@ public class PwItem {
         result = 31 * result + priceHi.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PwItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", imageLink='" + imageLink + '\'' +
+                ", count=" + count +
+                ", priceLo=" + priceLo +
+                ", priceHi=" + priceHi +
+                '}';
+    }
 }
