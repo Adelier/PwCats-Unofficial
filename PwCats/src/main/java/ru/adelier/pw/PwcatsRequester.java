@@ -15,44 +15,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class PwcatsRequester implements Runnable {
-
+// TODO async.
+public class PwcatsRequester {
     public enum Server {vega, orion, sirius, mira, terazet, altair,
         gelios, pegas, antaresm, kassiopeya, lira, andromeda, omega, persey};
 
-	private int id;
-	public int getId() {
-		return id;
-	}
-
-	private float prob;
-	private String server;
-	
-	private Float result = null;
-
-	final private static String pwcatsUrlFormat = "http://pwcats.info/cats/%s/item/%d";
-	public PwcatsRequester(int id, float prob, String server) {
-		this.id = id;
-		this.prob = prob;
-		this.server = server;
-	}
-
 	private static String formatPwcatsUrl(String server, int itemId){
+        final String pwcatsUrlFormat = "http://pwcats.info/cats/%s/item/%d";
 		return String.format(pwcatsUrlFormat, server, itemId);
 	}
-	
-	@Override
-	public void run() {
-		Float price;
-		try {
-			price = requestItemPrice();
-			result = price == null ? null : price * prob;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-    public List<PwItemCat> itemsCat(Server server, int id) {
+    public static List<PwItemCat> itemsCat(Server server, int id) {
         List<PwItemCat> items = new ArrayList<PwItemCat>();
         Document doc;
         try {
@@ -75,62 +48,35 @@ public class PwcatsRequester implements Runnable {
             String catTitle = cloumns.get(1).text();
 
             // coord & location
-            String[] sCoord = cloumns.get(3).text().split(" ");
+            String[] sCoord = cloumns.get(2).text().split(" ");
             int x = Integer.parseInt(sCoord[0]);
-            int y = Integer.parseInt(sCoord[0]);
+            int y = Integer.parseInt(sCoord[1]);
             Pair<Integer, Integer> coord = new Pair<Integer, Integer>(x, y);
             PwItemCat.Location location =
                     PwItemCat.Location.valueOf(cloumns.get(3).text());
 
             // name & count
-            String nameCount = cloumns.get(4).text();
-            System.out.println(nameCount);
+            String[] nameCount = cloumns.get(4).text().split("[()]");
+            String name = nameCount[0].trim();
+            int count = Integer.parseInt(nameCount[1]);
+            String imageLink = cloumns.get(4).child(0).toString();
+//            System.out.printf("%s, %d, %s\n", name, count, imageLink);
+//          >>Недописанная небесная глава, 34, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 30, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 41, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 59, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 41, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 20, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 4, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 17, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 18, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 14, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 19, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 58, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 55, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 98, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 70, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 1, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 3, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 2, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 5, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 2, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 13, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 20, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 20, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 2, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 20, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 20, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 6, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />Недописанная небесная глава, 1, <img src="http://www.pwdatabase.com/images/icons/generalm/20746.gif" width="30" height="30" border="0" title="&lt;span style='color:#; white-space:nowrap; font-size:15px;'&gt;Недописанная небесная глава&lt;/span&gt;&lt;br /&gt;&lt;span style=color:#ffcb4a&gt;Используйте 20 страниц чтобы создать свиток умений в печи Города слез неба.&lt;br /&gt;Также необходимы средние чернила.&lt;/span&gt;" class="TipsyTip2" />
 
-            // prices
+
+                    // prices
             String sPriceLo = cloumns.get(5).text();
             String sPriceHi = cloumns.get(6).text();
             OptionalInt priceLo = myParseInt(sPriceLo);
             OptionalInt priceHi = myParseInt(sPriceHi);
 
-            PwItemCat item = new PwItemCat(id, nameCount, 1, nickname, catTitle, coord, location, priceLo, priceHi);
+            PwItemCat item = new PwItemCat(id, name, imageLink, count, nickname, catTitle, coord, location, priceLo, priceHi);
+            System.out.println(item);
         }
         return items;
     }
-	
-	private Float requestItemPrice() throws IOException, MalformedURLException {
-//		Logger.getGlobal().fine("enter callable " + this);
-		Document doc = Jsoup.parse(new URL(formatPwcatsUrl(server, id)), 10000);
 
-		Integer hiPrice = Integer.MAX_VALUE;
-		Integer loPrice = 0;
-		
-		Elements table = doc.body().getElementById("tabs").getElementsByTag("tr");
-		for (int i = 1; i < table.size(); i++) {
-			Elements cloumns = table.get(i).getElementsByTag("td");
-			String sPriceLo = cloumns.get(5).text();
-			String sPriceHi = cloumns.get(6).text();
-            OptionalInt iPriceLo = myParseInt(sPriceLo);
-            OptionalInt iPriceHi = myParseInt(sPriceHi);
-
-			if (iPriceLo.isPresent())
-				hiPrice = Math.min(hiPrice, iPriceLo.getAsInt());
-			if (iPriceHi.isPresent())
-				loPrice = Math.max(loPrice, iPriceHi.getAsInt());
-		}
-
-		Logger.getGlobal().fine("exit  callable " + this);
-		if (hiPrice < 1.2 * loPrice)
-			return (hiPrice + loPrice) / 2F;
-		else if (loPrice > 0)
-			return (float) loPrice;
-		else if (hiPrice != Integer.MAX_VALUE)
-			return (float) hiPrice;
-		else {
-			return null;
-		}
-	}
-
-	private OptionalInt myParseInt(String s) {
+	private static OptionalInt myParseInt(String s) {
 		s = s.trim().replace(" ", "");
 		if (s == null || s.equals(""))
 			return OptionalInt.empty();
@@ -141,15 +87,5 @@ public class PwcatsRequester implements Runnable {
 		} catch (NumberFormatException e) {
 			return OptionalInt.empty();
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "PwcatsRequester [id=" + id + ", prob=" + prob + ", server="
-				+ server + "]";
-	}
-
-	public Float getResult() {
-		return result;
 	}
 }

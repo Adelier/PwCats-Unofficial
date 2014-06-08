@@ -87,10 +87,10 @@ public class PwDBChestQuestRequester {
 		
 		
 		for (Entry<Integer, Float> entry : idsAndChance.entrySet()) {
-			PwcatsRequester pwcatsRequester = new PwcatsRequester(entry.getKey(), entry.getValue(), server);
+			PwcatsRequester pwcatsRequester = new PwcatsRequester(/*entry.getKey(), entry.getValue(), server*/);
 			requesters.add(pwcatsRequester);
 			
-			Thread pwcatsRequesterThread = new Thread(pwcatsRequester);
+			Thread pwcatsRequesterThread = new Thread(/*pwcatsRequester*/);
 			threads.add(pwcatsRequesterThread);
 			
 			pwcatsRequesterThread.start();
@@ -101,11 +101,11 @@ public class PwDBChestQuestRequester {
 		}
 		float totalPrice = 0;
 		for (PwcatsRequester pwcatsRequester : requesters) {
-			if (pwcatsRequester.getResult() == null) {
-				unknownPricesOn.add(pwcatsRequester.getId());
-			} else {
-				totalPrice += pwcatsRequester.getResult();
-			}
+//			if (pwcatsRequester.getResult() == null) {
+//				unknownPricesOn.add(pwcatsRequester.getId());
+//			} else {
+//				totalPrice += pwcatsRequester.getResult();
+//			}
 		}
 
 		price = totalPrice;
