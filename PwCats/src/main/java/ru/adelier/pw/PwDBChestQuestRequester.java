@@ -149,13 +149,6 @@ public class PwDBChestQuestRequester {
 		return "error";
 	}
 
-	public static void main(String[] args) throws MalformedURLException,
-			IOException {
-//		System.out.println(new PwDBChestQuestRequester("", 12).formatPwPrice(100));
-//		System.out.println(getTotalChestPrice("vega", 28842, 0));
-//		requestName(28842);
-	}
-
 	public float getPrice() {
 		return price;
 	}

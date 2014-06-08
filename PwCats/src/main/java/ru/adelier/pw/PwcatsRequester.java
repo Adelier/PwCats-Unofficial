@@ -71,7 +71,7 @@ public class PwcatsRequester {
             OptionalInt priceHi = myParseInt(sPriceHi);
 
             PwItemCat item = new PwItemCat(id, name, imageLink, count, nickname, catTitle, coord, location, priceLo, priceHi);
-            System.out.println(item);
+            items.add(item);
         }
         return items;
     }
