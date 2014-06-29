@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">myapp</string>
     <string name="onclick_function">onclickFunction</string>
+    <string name="app_label">myapp</string>
+    <string name="search_hint">название предмета...</string>
 </resources>

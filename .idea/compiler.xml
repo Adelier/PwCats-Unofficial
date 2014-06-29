@@ -22,6 +22,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="ItemsBDCreator" />
+        <module name="myapp" />
         <module name="PwCats" />
       </profile>
     </annotationProcessing>
