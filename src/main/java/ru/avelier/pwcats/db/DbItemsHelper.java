@@ -88,6 +88,7 @@ public class DbItemsHelper extends SQLiteOpenHelper {
         String outFileName = DB_PATH + DATABASE_NAME;
 
         // Теперь создадим поток для записи в эту БД побайтно
+        new File(DB_PATH).mkdirs();
         OutputStream localDbStream = new BufferedOutputStream(new FileOutputStream(outFileName));
 
         // Собственно, копирование
