@@ -3,6 +3,9 @@
     <string name="app_name">Pwcats (by Avelier)</string>
     <string name="onclick_function">onclickFunction</string>
     <string name="search_activity_label">Поиск предмета</string>
-    <string name="search_hint">название предмета...</string>
+    <string name="search_hint">Название предмета...</string>
     <string name="item_details_activity_title">Item</string>
+
+    <string name="nothing_found">Ничего не найдено...</string>
+    <string name="network_error">Ошибка подключения</string>
 </resources>

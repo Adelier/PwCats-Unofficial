@@ -56,8 +56,22 @@ public class ItemDetailsActivity extends Activity {
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
-        if (infos == null || infos.isEmpty())
+        if (infos == null || infos.isEmpty()) {
+            LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = vi.inflate(R.layout.message, null);
+            int message_id;
+            if (infos == null)
+                message_id = R.string.network_error;
+            else
+                message_id = R.string.nothing_found;
+            ((TextView)v.findViewById(R.id.messageText)).setText(message_id);
+// insert into main view
+            ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
+            insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            findViewById(R.id.progressBar).setVisibility(View.GONE);
             return;
+        }
         for (PwItemCat info : infos) {
             add_item_node_cat(info);
             Log.d(this.getClass().getName(), "item info added " + info.toString());
