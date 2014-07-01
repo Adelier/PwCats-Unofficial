@@ -40,15 +40,7 @@ public class ItemDetailsActivity extends Activity {
             return;
         }
 
-        // TODO correct asynk
         AsyncTask<Integer, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(id);
-        List<PwItemCat> infos = null;
-        try {
-            infos = asyncTask.get();
-        } catch (Exception e) {
-            Log.e(this.getClass().toString(), "pwcats request exception", e);
-        }
-        fillViewWithNodes(infos);
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
@@ -58,31 +50,34 @@ public class ItemDetailsActivity extends Activity {
             add_item_node_cat(info);
             Log.d("item info", info.toString());
         }
+        findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
     class RetrieveFeedTask extends AsyncTask<Integer, Void, List<PwItemCat>> {
-
+        List<PwItemCat> infos = null;
+        Exception exception = null;
         protected List<PwItemCat> doInBackground(Integer... id) {
             try {
-                List<PwItemCat> infos = PwcatsRequester.itemsCat(PwcatsRequester.Server.vega, id[0]);
+                infos = PwcatsRequester.itemsCat(PwcatsRequester.Server.vega, id[0]);
                 return infos;
             } catch (Exception e) {
-                Log.e(this.getClass().toString(), "error while requesting pwcats.info");
+                exception = e;
+                Log.e(this.getClass().toString(), "error while requesting pwcats.info", e);
                 return null;
             }
         }
 
         protected void onPostExecute(List<PwItemCat> feed) {
-            // exception, post-process
+            if (exception == null)
+                fillViewWithNodes(infos);
+            else {
+                // TODO put something on screen
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+            }
         }
     }
 
     public void add_item_node_cat(PwItemCat itemInfo) {
-//        TextView textRes = (TextView)findViewById(R.id.textRes);
-//        SearchView searchView = (SearchView)findViewById(R.id.searchView);
-
-//        textRes.setText(searchView.getQuery());
-
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.item_details_node_cat, null);
 
@@ -104,9 +99,8 @@ public class ItemDetailsActivity extends Activity {
         TextView textItemCostHi = (TextView) v.findViewById(R.id.textItemCostHi);
         if (itemInfo.getPriceHi() != null)
             textItemCostHi.setText("" + itemInfo.getPriceHi());
-// sizes
-//        int width = v.getWidth();
 
+// sizes
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
@@ -117,6 +111,7 @@ public class ItemDetailsActivity extends Activity {
         locationLayout.setMinimumWidth((int) (width * 0.15f));
         View itemCostLayout = v.findViewById(R.id.itemCostLayout);
         itemCostLayout.setMinimumWidth((int) (width * 0.25f));
+
 // insert into main view
         ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
         insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
