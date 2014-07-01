@@ -14,9 +14,6 @@ import ru.adelier.pw.PwItemCat;
 import ru.adelier.pw.PwcatsRequester;
 
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class ItemDetailsActivity extends Activity {
 
@@ -44,8 +41,9 @@ public class ItemDetailsActivity extends Activity {
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
-        if (infos == null)
+        if (infos == null || infos.isEmpty())
             return;
+        setTitle(infos.get(0).getItemName());
         for (PwItemCat info : infos) {
             add_item_node_cat(info);
             Log.d("item info", info.toString());
