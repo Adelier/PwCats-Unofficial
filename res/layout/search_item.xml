@@ -6,12 +6,8 @@
               android:weightSum="1"
               android:id="@+id/main_layout"
               android:fadeScrollbars="true">
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textRes"
-            android:layout_gravity="center_horizontal" android:layout_margin="10dp"/>
+
+
     <LinearLayout
         android:id="@+id/item_and_server_layout"
         android:orientation="horizontal"
@@ -19,20 +15,28 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/editText"
+            android:hint="Название предмета"
+            android:layout_weight="40"/>
         <SearchView
                 android:layout_width="wrap_content"
                 android:layout_weight="90"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:id="@+id/searchView"
                 android:queryHint="Название предмета"
-                android:iconifiedByDefault="false"/>
+                android:iconifiedByDefault="false"
+                android:visibility="gone"/>
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_weight="10"
+            android:layout_width="0dp"
+            android:layout_weight="15"
             android:layout_height="fill_parent"
             android:id="@+id/spinner_server"
-            android:spinnerMode="dialog"/>
+            android:spinnerMode="dialog"
+            />
     </LinearLayout>
 
     <ScrollView
@@ -47,5 +51,6 @@
             android:divider="@drawable/mydivider">
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
 

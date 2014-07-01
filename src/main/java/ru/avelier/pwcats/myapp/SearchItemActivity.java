@@ -11,7 +11,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +83,21 @@ public class SearchItemActivity extends Activity {
         });
 
         // show recent items
-        showRecentItems();
+//        showRecentItems();
+        search("");
+
+        EditText edit = (EditText) findViewById(R.id.editText);
+        edit.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+//                EditText edit = (EditText) findViewById(R.id.editText);
+                String query = s.toString();
+                search(query);
+            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
 
         SearchView searchView = (SearchView)findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -124,15 +141,20 @@ public class SearchItemActivity extends Activity {
     // TODO optimise
     // TODO case-insensitive. Maybe create 1 more row with all in lower case. Ибо sqlite буржуйский.
     public void search(String subname) {
-        if (subname.equals("")) {
-            showRecentItems();
-        }
+        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
 
         // stop loading icons
         for (AsyncTask<String, Void, Bitmap> task : loadIconTasks) {
             task.cancel(true);
         }
         loadIconTasks.clear();
+
+        if (subname == null || subname.equals("")) {
+            insertPoint.removeAllViewsInLayout();
+            showRecentItems();
+            return;
+        }
+
         // process search
         SQLiteDatabase db = items_db.getReadableDatabase();
         Cursor c;
@@ -148,7 +170,6 @@ public class SearchItemActivity extends Activity {
         }
 
 // add proposials to list
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
         insertPoint.removeAllViewsInLayout();
         if (c.moveToFirst()) {
             do {
