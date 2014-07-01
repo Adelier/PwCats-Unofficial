@@ -24,6 +24,7 @@ public class DbRecentItemsHelper extends SQLiteOpenHelper {
                     " )";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + RecentItemsEntry.TABLE_NAME;
+    private static final int[] faq = {5639, 11208, 25820, 25821, 27424, 19240, 20746, 20216, 24716, 19004};
 
     public DbRecentItemsHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,6 +32,11 @@ public class DbRecentItemsHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d(this.getClass().getName(), "onCreate() " + SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES);
+        for (int id : faq) {
+            db.execSQL("INSERT INTO " + RecentItemsEntry.TABLE_NAME +
+                    " (" + RecentItemsEntry.COL_RECENT_ID + ", " + RecentItemsEntry.COL_RECENT_DATE +
+                    ") VALUES (" + id + ", " + id + ")");
+        }
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO save stored data
