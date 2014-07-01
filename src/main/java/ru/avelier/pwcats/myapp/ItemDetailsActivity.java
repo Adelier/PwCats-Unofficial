@@ -109,7 +109,7 @@ public class ItemDetailsActivity extends Activity {
 
 // fill in any details dynamically here
         TextView itemCount = (TextView) v.findViewById(R.id.textItemCount);
-        itemCount.setText("" + itemInfo.getCount());
+        itemCount.setText("x" + itemInfo.getCount());
 
         TextView textCatTitle = (TextView) v.findViewById(R.id.textCatTitle);
         textCatTitle.setText(itemInfo.getCatTitle());

@@ -6,23 +6,13 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textItemCount"
-        android:layout_gravity="center_horizontal"
-        android:textSize="13sp"
-        android:layout_weight="10"
-        android:layout_marginLeft="10dp"
-        android:gravity="center"/>
     <LinearLayout
         android:id="@+id/catNameLayout"
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="50"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="15dp"
         android:layout_marginRight="4dp">
 
         <TextView
@@ -83,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="25"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="21dp">
+        android:layout_marginRight="10dp">
 
         <TextView
             android:layout_width="fill_parent"
@@ -105,6 +95,17 @@
             android:textColor="#ff43c9ff"
             android:gravity="center_vertical|left"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textItemCount"
+        android:layout_gravity="center_horizontal"
+        android:textSize="13sp"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:layout_marginRight="15dp"/>
 
 
 </LinearLayout>
