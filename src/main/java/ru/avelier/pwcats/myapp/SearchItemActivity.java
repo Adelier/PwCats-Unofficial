@@ -112,7 +112,7 @@ public class SearchItemActivity extends Activity {
         SQLiteDatabase db = recent_items_db.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT " + RecentItemsEntry.COL_RECENT_ID +
                 " FROM " + RecentItemsEntry.TABLE_NAME +
-                " ORDER BY " + RecentItemsEntry.COL_RECENT_ID + " DESC" +
+                " ORDER BY " + RecentItemsEntry.COL_RECENT_DATE + " DESC" +
                 " LIMIT 0, 100", new String[]{});
         if (c.moveToFirst()) do {
             res.add(c.getInt(0));
@@ -215,6 +215,8 @@ public class SearchItemActivity extends Activity {
         // db recent
         Log.d(this.getClass().getName(), "inserting new recent id: " + id);
         SQLiteDatabase db = recent_items_db.getWritableDatabase();
+        db.execSQL("DELETE FROM " + RecentItemsEntry.TABLE_NAME +
+                " WHERE " + RecentItemsEntry.COL_RECENT_ID + " = " + id);
         db.execSQL("INSERT INTO " + RecentItemsEntry.TABLE_NAME +
                 " (" + RecentItemsEntry.COL_RECENT_ID + ") VALUES(" + id + ")");
         db.close();
