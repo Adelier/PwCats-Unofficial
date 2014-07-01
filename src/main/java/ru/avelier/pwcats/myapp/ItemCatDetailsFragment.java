@@ -1,9 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -47,50 +44,15 @@ public class ItemCatDetailsFragment extends Fragment {
             Log.wtf(this.toString(), "server not passed :(");
             return rootView;
         }
-        String itemName = getActivity().getIntent().getStringExtra("itemName");
-        if (server == null) {
-            Log.wtf(this.toString(), "itemName not passed :(");
-            return rootView;
-        }
         Integer id = getActivity().getIntent().getIntExtra("id", -1);
         if (id == -1) {
             Log.wtf(this.toString(), "id not passed :(");
             return rootView;
         }
 
-//        title
-        getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
-//        icon
-        new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
-
         // asynk ask pwcats.info and fill view with nodes
-        AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(new Object[]{id, server});
+        AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrievePwItemCatTask().execute(new Object[]{id, server});
         return rootView;
-    }
-    private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
-        public DownloadActionBarIconTask() {
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urlDisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            final float scale = getResources().getDisplayMetrics().density;
-            int size = (int)(64 * scale + 0.5f);
-            result.setDensity(4);
-
-            getActivity().getActionBar().setIcon(new BitmapDrawable(result));
-        }
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
@@ -117,7 +79,7 @@ public class ItemCatDetailsFragment extends Fragment {
         rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
-    class RetrieveFeedTask extends AsyncTask<Object, Void, List<PwItemCat>> {
+    class RetrievePwItemCatTask extends AsyncTask<Object, Void, List<PwItemCat>> {
         List<PwItemCat> infos = null;
         Exception exception = null;
         protected List<PwItemCat> doInBackground(Object... id_server) {

@@ -1,6 +1,10 @@
 package ru.avelier.pwcats.myapp;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -9,6 +13,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import ru.adelier.pw.PwcatsRequester;
+
+import java.io.InputStream;
 
 /**
  * Created by Adelier on 02.07.2014.
@@ -52,6 +60,51 @@ public class ItemDetailsFragmentActivity extends FragmentActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getIntent().getStringExtra("server"));
+        if (server == null) {
+            Log.wtf(this.toString(), "server not passed :(");
+            return;
+        }
+        String itemName = getIntent().getStringExtra("itemName");
+        if (itemName == null) {
+            Log.wtf(this.toString(), "itemName not passed :(");
+            return;
+        }
+        Integer id = getIntent().getIntExtra("id", -1);
+        if (id == -1) {
+            Log.wtf(this.toString(), "id not passed :(");
+            return;
+        }
+//        title
+        setTitle(String.format("%s (%s)", itemName, server.toString()));
+//        icon
+        new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
+    }
+    private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
+        public DownloadActionBarIconTask() {
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urlDisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urlDisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            final float scale = getResources().getDisplayMetrics().density;
+            int size = (int)(64 * scale + 0.5f);
+            result.setDensity(4);
+
+            getActionBar().setIcon(new BitmapDrawable(result));
+        }
     }
 
     @Override

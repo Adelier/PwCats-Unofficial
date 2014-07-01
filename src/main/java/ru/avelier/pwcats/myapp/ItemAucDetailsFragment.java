@@ -1,9 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import ru.adelier.pw.PwItemCat;
+import ru.adelier.pw.PwItemAuc;
 import ru.adelier.pw.PwcatsRequester;
 
 import java.io.InputStream;
@@ -39,18 +36,12 @@ public class ItemAucDetailsFragment extends Fragment {
     @Override
     public ViewGroup onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.item_details_cat);
-        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_cat, container, false);
+        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_auc, container, false);
 
         // load params from intent extras
         PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getActivity().getIntent().getStringExtra("server"));
         if (server == null) {
             Log.wtf(this.toString(), "server not passed :(");
-            return rootView;
-        }
-        String itemName = getActivity().getIntent().getStringExtra("itemName");
-        if (server == null) {
-            Log.wtf(this.toString(), "itemName not passed :(");
             return rootView;
         }
         Integer id = getActivity().getIntent().getIntExtra("id", -1);
@@ -59,42 +50,12 @@ public class ItemAucDetailsFragment extends Fragment {
             return rootView;
         }
 
-//        title
-        getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
-//        icon
-        new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
-
         // asynk ask pwcats.info and fill view with nodes
-        AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(new Object[]{id, server});
+        AsyncTask<Object, Void, List<PwItemAuc>> asyncTask = new RetrievePwItemAucTask().execute(new Object[]{id, server});
         return rootView;
     }
-    private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
-        public DownloadActionBarIconTask() {
-        }
 
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urlDisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            final float scale = getResources().getDisplayMetrics().density;
-            int size = (int)(64 * scale + 0.5f);
-            result.setDensity(4);
-
-            getActivity().getActionBar().setIcon(new BitmapDrawable(result));
-        }
-    }
-
-    private void fillViewWithNodes(List<PwItemCat> infos) {
+    private void fillViewWithNodes(List<PwItemAuc> infos) {
         if (infos == null || infos.isEmpty()) {
             LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.message, null);
@@ -111,19 +72,19 @@ public class ItemAucDetailsFragment extends Fragment {
             rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
             return;
         }
-        for (PwItemCat info : infos) {
+        for (PwItemAuc info : infos) {
             add_item_node_cat(info);
             Log.d(this.toString(), "item info added " + info.toString());
         }
         rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
-    class RetrieveFeedTask extends AsyncTask<Object, Void, List<PwItemCat>> {
-        List<PwItemCat> infos = null;
+    class RetrievePwItemAucTask extends AsyncTask<Object, Void, List<PwItemAuc>> {
+        List<PwItemAuc> infos = null;
         Exception exception = null;
-        protected List<PwItemCat> doInBackground(Object... id_server) {
+        protected List<PwItemAuc> doInBackground(Object... id_server) {
             try {
-                infos = PwcatsRequester.itemsCat((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0]);
+                infos = PwcatsRequester.itemsAuc((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0]);
                 return infos;
             } catch (Exception e) {
                 exception = e;
@@ -132,7 +93,7 @@ public class ItemAucDetailsFragment extends Fragment {
             }
         }
 
-        protected void onPostExecute(List<PwItemCat> feed) {
+        protected void onPostExecute(List<PwItemAuc> feed) {
             if (exception == null)
                 fillViewWithNodes(infos);
             else {
@@ -141,49 +102,52 @@ public class ItemAucDetailsFragment extends Fragment {
         }
     }
 
-    public void add_item_node_cat(PwItemCat itemInfo) {
+    public void add_item_node_cat(PwItemAuc itemInfo) {
         LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = vi.inflate(R.layout.item_details_node_cat, null);
+        View v = vi.inflate(R.layout.item_details_node_auc, null);
 
-// fill in any details dynamically here
-        TextView itemCount = (TextView) v.findViewById(R.id.textItemCount);
-        itemCount.setText("x" + itemInfo.getCount());
-
-        TextView textCatTitle = (TextView) v.findViewById(R.id.textCatTitle);
-        textCatTitle.setText(itemInfo.getCatTitle());
-        TextView textCatName = (TextView) v.findViewById(R.id.textCatName);
-        textCatName.setText(itemInfo.getNickname());
-
-        // TODO http://www.pwmap.ru/
-        TextView textLocationName = (TextView) v.findViewById(R.id.textLocationName);
-        textLocationName.setText(itemInfo.getLocation().toString());
-        TextView textLocationCoordinates = (TextView) v.findViewById(R.id.textLocationCoordinates);
-        textLocationCoordinates.setText(String.format("%d %d", itemInfo.getCoord()[0], itemInfo.getCoord()[1]));
-
-        TextView textItemCostLo = (TextView) v.findViewById(R.id.textItemCostLo);
-        if (itemInfo.getPriceLo() != null)
-            textItemCostLo.setText("" + itemInfo.getPriceLo());
-        TextView textItemCostHi = (TextView) v.findViewById(R.id.textItemCostHi);
-        if (itemInfo.getPriceHi() != null)
-            textItemCostHi.setText("" + itemInfo.getPriceHi());
+// lot id
+        TextView textAucId = (TextView) v.findViewById(R.id.auc_id);
+        textAucId.setText("#" + itemInfo.getLot_id());
+// price prepare
+        int count = itemInfo.getCount();
+        int priceBidAll = itemInfo.getPriceLo();
+        int priceBuyoutAll = itemInfo.getPriceHi();
+        int priceBidX1 = priceBidAll / count;
+        int priceBuyoutX1 = priceBuyoutAll / count;
+// price x1
+        TextView textPriceBidX1 = (TextView) v.findViewById(R.id.price_bid_x1);
+        textPriceBidX1.setText("1 x " + priceBidX1);
+        TextView textPriceBuyoutX1 = (TextView) v.findViewById(R.id.price_buyout_x1);
+        textPriceBuyoutX1.setText("1 x " + priceBuyoutX1);
+// price all
+        TextView textPriceBidAll = (TextView) v.findViewById(R.id.price_bid_all);
+        textPriceBidAll.setText(count + " x " + priceBidAll);
+        TextView textPriceBuyoutAll = (TextView) v.findViewById(R.id.price_buyout_all);
+        textPriceBuyoutAll.setText(count + " x " + priceBuyoutAll);
+// count
+//        TextView textItemCount = (TextView) v.findViewById(R.id.textItemCount);
+//        textItemCount.setText("x" + count);
+// up to time
+        // TODO colour
+        TextView textUpToTime = (TextView) v.findViewById(R.id.textUpToTime);
+        textUpToTime.setText(itemInfo.getUpToTime());
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
-        View textItemCount = v.findViewById(R.id.textItemCount);
-        textItemCount.setMinimumWidth((int) (width * 0.13f));
-        View catNameLayout = v.findViewById(R.id.catNameLayout);
-        catNameLayout.setMinimumWidth((int) (width * 0.47f));
-        View locationLayout = v.findViewById(R.id.locationLayout);
-        locationLayout.setMinimumWidth((int) (width * 0.17f));
-        View itemCostLayout = v.findViewById(R.id.itemCostLayout);
-        itemCostLayout.setMinimumWidth((int) (width * 0.23f));
+        textAucId.setMinimumWidth((int) (width * 0.20f));
+        View priceX1Layout = v.findViewById(R.id.priceX1Layout);
+        priceX1Layout.setMinimumWidth((int) (width * 0.25f));
+        View priceAllLayout = v.findViewById(R.id.priceAllLayout);
+        priceAllLayout.setMinimumWidth((int) (width * 0.25f));
+//        textItemCount.setMinimumWidth((int) (width * 0.10f));
+        textUpToTime.setMinimumWidth((int) (width * 0.10f));
 
 // insert into main view
         ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
         insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
     }
 }
 

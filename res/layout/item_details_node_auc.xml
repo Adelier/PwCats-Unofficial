@@ -4,108 +4,99 @@
                 android:id="@+id/item_node_layout"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
-    <LinearLayout
-        android:id="@+id/catNameLayout"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="50"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="4dp">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textCatTitle"
-            android:layout_gravity="center"
-            android:textColor="#ffffa54b"
-            android:textSize="13dp"
-            android:textIsSelectable="false"
-            android:gravity="center"/>
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/textCatName"
-            android:layout_gravity="center_horizontal"
-            android:textColor="#ffffffff"
-            android:textSize="13dp"
-            android:textIsSelectable="false"
-            android:gravity="center"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/locationLayout"
-        android:orientation="vertical"
+    <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="15"
+        android:id="@+id/auc_id"
+        android:layout_gravity="center"
+        android:textSize="13dp"
+        android:textIsSelectable="false"
+        android:gravity="center"
+        android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginLeft="4dp">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-            android:id="@+id/textLocationName"
-            android:layout_gravity="center_horizontal"
-            android:textSize="13sp"
-            android:gravity="center"/>
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/textLocationCoordinates"
-            android:layout_gravity="center_horizontal"
-            android:textSize="13sp"
-            android:gravity="center"
-            />
-    </LinearLayout>
-
+        android:textColor="@android:color/white"/>
     <LinearLayout
-        android:id="@+id/itemCostLayout"
+        android:id="@+id/priceX1Layout"
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="25"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
+        android:layout_weight="20"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp">
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
-            android:id="@+id/textItemCostLo"
-            android:layout_gravity="center_horizontal"
-            android:textSize="13sp"
+            android:id="@+id/price_bid_x1"
             android:textColor="#ffff4928"
-            android:gravity="center_vertical|right"/>
-
+            android:layout_gravity="center"
+            android:textSize="13dp"
+            android:textIsSelectable="false"
+            android:gravity="center"
+            android:layout_margin="2dp"/>
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/textItemCostHi"
-            android:layout_gravity="center_horizontal"
-            android:textSize="13sp"
+            android:id="@+id/price_buyout_x1"
             android:textColor="#ff43c9ff"
-            android:gravity="center_vertical|left"/>
+            android:layout_gravity="center_horizontal"
+            android:textSize="13dp"
+            android:textIsSelectable="false"
+            android:gravity="center"
+            android:layout_margin="2dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/priceAllLayout"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="20"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/price_bid_all"
+            android:textColor="#ffff4928"
+            android:layout_gravity="center"
+            android:textSize="13dp"
+            android:textIsSelectable="false"
+            android:gravity="center"
+            android:layout_margin="2dp"/>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/price_buyout_all"
+            android:textColor="#ff43c9ff"
+            android:layout_gravity="center_horizontal"
+            android:textSize="13dp"
+            android:textIsSelectable="false"
+            android:gravity="center"
+            android:layout_margin="2dp"/>
     </LinearLayout>
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_weight="10"
         android:id="@+id/textItemCount"
         android:layout_gravity="center_horizontal"
         android:textSize="13sp"
-        android:layout_weight="10"
         android:gravity="center"
-        android:layout_marginRight="15dp"/>
-
+        android:layout_margin="4dp"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="10"
+        android:id="@+id/textUpToTime"
+        android:layout_gravity="center_horizontal"
+        android:textSize="13sp"
+        android:gravity="center"
+        android:layout_margin="4dp"/>
 
 </LinearLayout>
