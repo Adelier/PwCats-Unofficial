@@ -89,7 +89,7 @@
             android:id="@+id/textItemCostLo"
             android:layout_gravity="center_horizontal"
             android:textSize="16sp"
-            android:textColor="#ff43c9ff"
+            android:textColor="#ffff4928"
             android:gravity="center_vertical|right"/>
 
         <TextView
@@ -99,7 +99,7 @@
             android:id="@+id/textItemCostHi"
             android:layout_gravity="center_horizontal"
             android:textSize="16sp"
-            android:textColor="#ffff4928"
+            android:textColor="#ff43c9ff"
             android:gravity="center_vertical|left"/>
     </LinearLayout>
 
