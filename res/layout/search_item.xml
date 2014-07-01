@@ -42,7 +42,9 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/scrolledLinearView">
+            android:id="@+id/scrolledLinearView"
+            android:showDividers="beginning"
+            android:divider="@drawable/mydivider">
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
