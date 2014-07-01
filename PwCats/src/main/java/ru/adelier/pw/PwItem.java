@@ -6,7 +6,7 @@ import java.util.OptionalInt;
  * Created by Adelier on 08.06.2014.
  */
 public class PwItem {
-    public PwItem(int id, String name, String imageLink, int count, OptionalInt priceLo, OptionalInt priceHi) {
+    public PwItem(int id, String name, String imageLink, int count, Integer priceLo, Integer priceHi) {
         this.id = id;
         this.name = name;
         this.imageLink = imageLink;
@@ -19,8 +19,8 @@ public class PwItem {
     private String name;
     private String imageLink;
     private int count;
-    private OptionalInt priceLo;
-    private OptionalInt priceHi;
+    private Integer priceLo;
+    private Integer priceHi;
 
     public int getId() {
         return id;
@@ -34,11 +34,11 @@ public class PwItem {
         return count;
     }
 
-    public OptionalInt getPriceLo() {
+    public Integer getPriceLo() {
         return priceLo;
     }
 
-    public OptionalInt getPriceHi() {
+    public Integer getPriceHi() {
         return priceHi;
     }
 

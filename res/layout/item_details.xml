@@ -7,11 +7,19 @@
               android:id="@+id/main_layout"
               android:fadeScrollbars="true">
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/gridView"
-        android:layout_gravity="center_horizontal"/>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrolledLinearView"
+            android:divider="@drawable/mydivider"
+            android:dividerPadding="22dp"
+            android:showDividers="middle">
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
 

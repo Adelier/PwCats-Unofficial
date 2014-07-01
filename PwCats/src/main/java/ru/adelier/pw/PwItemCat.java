@@ -11,7 +11,7 @@ import java.util.OptionalInt;
 public class PwItemCat extends PwItem {
     public enum Location {ГДЗ, ГДВ, ГО, ГП, ГМ, ГЦ, ГИ, КБ};
 
-    public PwItemCat(int id, String name, String imageLink, int count, String nickname, String catTitle, Pair<Integer, Integer> coord, Location location, OptionalInt priceLo, OptionalInt priceHi) {
+    public PwItemCat(int id, String name, String imageLink, int count, String nickname, String catTitle, int[] coord, Location location, Integer priceLo, Integer priceHi) {
         super(id, name, imageLink, count, priceLo, priceHi);
 
         this.nickname = nickname;
@@ -22,7 +22,7 @@ public class PwItemCat extends PwItem {
 
     private String nickname;
     private String catTitle;
-    private Pair<Integer, Integer> coord;
+    private int[] coord;
     private Location location;
 
     public String getNickname() {
@@ -33,7 +33,7 @@ public class PwItemCat extends PwItem {
         return catTitle;
     }
 
-    public Pair<Integer, Integer> getCoord() {
+    public int[] getCoord() {
         return coord;
     }
 
@@ -72,7 +72,7 @@ public class PwItemCat extends PwItem {
         return "PwItemCat{" +
                 "nickname='" + nickname + '\'' +
                 ", catTitle='" + catTitle + '\'' +
-                ", coord=" + coord +
+                ", coord=" + coord[0] + " " + coord[1] +
                 ", location=" + location +
                 "} " + super.toString();
     }

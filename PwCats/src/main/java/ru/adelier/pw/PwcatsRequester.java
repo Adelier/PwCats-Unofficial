@@ -15,7 +15,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-// TODO async.
 public class PwcatsRequester {
     public enum Server {vega, orion, sirius, mira, terazet, altair,
         gelios, pegas, antaresm, kassiopeya, lira, andromeda, omega, persey};
@@ -51,7 +50,7 @@ public class PwcatsRequester {
             String[] sCoord = cloumns.get(2).text().split(" ");
             int x = Integer.parseInt(sCoord[0]);
             int y = Integer.parseInt(sCoord[1]);
-            Pair<Integer, Integer> coord = new Pair<Integer, Integer>(x, y);
+            int[] coord = new int[]{x, y};
             PwItemCat.Location location =
                     PwItemCat.Location.valueOf(cloumns.get(3).text());
 
@@ -65,10 +64,10 @@ public class PwcatsRequester {
 
 
                     // prices
-            String sPriceLo = cloumns.get(5).text();
-            String sPriceHi = cloumns.get(6).text();
-            OptionalInt priceLo = myParseInt(sPriceLo);
-            OptionalInt priceHi = myParseInt(sPriceHi);
+            String sPriceLo = cloumns.get(6).text();
+            String sPriceHi = cloumns.get(5).text(); // 6 is low, 5 is high
+            Integer priceLo = myParseInt(sPriceLo);
+            Integer priceHi = myParseInt(sPriceHi);
 
             PwItemCat item = new PwItemCat(id, name, imageLink, count, nickname, catTitle, coord, location, priceLo, priceHi);
             items.add(item);
@@ -76,16 +75,16 @@ public class PwcatsRequester {
         return items;
     }
 
-	private static OptionalInt myParseInt(String s) {
+	private static Integer myParseInt(String s) {
 		s = s.trim().replace(" ", "");
 		if (s == null || s.equals(""))
-			return OptionalInt.empty();
+			return null;
 		Integer res = null;
 		try {
 			res = Integer.parseInt(s);
-            return OptionalInt.of(res);
+            return res;
 		} catch (NumberFormatException e) {
-			return OptionalInt.empty();
+			return null;
 		}
 	}
 }
