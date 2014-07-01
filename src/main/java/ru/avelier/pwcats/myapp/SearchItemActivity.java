@@ -197,7 +197,7 @@ public class SearchItemActivity extends Activity {
 // load icon
         AsyncTask<String, Void, Bitmap> loadIconTask = new DownloadImageTask((ImageView) v.findViewById(R.id.itemIcon));
         loadIconTasks.add(loadIconTask);
-        loadIconTask.execute(String.format("http://www.pwdatabase.com/images/icons/generalm/%d.gif", id));
+        loadIconTask.execute(getIconUrl(id));
 // fill id (hidden)
         TextView itemId = (TextView) v.findViewById(R.id.textCatName);
         itemId.setText(id + "");
@@ -215,6 +215,10 @@ public class SearchItemActivity extends Activity {
 
 // insert into main view
         insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    }
+
+    public static String getIconUrl(int id) {
+        return String.format("http://www.pwdatabase.com/images/icons/generalm/%d.gif", id);
     }
 
 

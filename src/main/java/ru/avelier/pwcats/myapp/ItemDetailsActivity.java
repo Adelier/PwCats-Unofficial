@@ -2,6 +2,10 @@ package ru.avelier.pwcats.myapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -13,6 +17,7 @@ import android.widget.TextView;
 import ru.adelier.pw.PwItemCat;
 import ru.adelier.pw.PwcatsRequester;
 
+import java.io.InputStream;
 import java.util.List;
 
 public class ItemDetailsActivity extends Activity {
@@ -49,10 +54,36 @@ public class ItemDetailsActivity extends Activity {
 
         // title
         setTitle(String.format("%s (%s)", itemName, server.toString()));
-//        getActionBar().setIcon(R.drawable.my_icon);
+        // icon
+        new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
 
         // asynk ask pwcats.info and fill view with nodes
         AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(new Object[]{id, server});
+    }
+    private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
+        public DownloadActionBarIconTask() {
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urlDisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urlDisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            final float scale = getResources().getDisplayMetrics().density;
+            int size = (int)(64 * scale + 0.5f);
+            result.setDensity(4);
+
+            getActionBar().setIcon(new BitmapDrawable(result));
+        }
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
