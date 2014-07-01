@@ -94,6 +94,9 @@ public class ItemDetailsActivity extends Activity {
         View v = vi.inflate(R.layout.item_details_node_cat, null);
 
 // fill in any details dynamically here
+        TextView itemCount = (TextView) v.findViewById(R.id.textItemCount);
+        itemCount.setText("" + itemInfo.getCount());
+
         TextView textCatTitle = (TextView) v.findViewById(R.id.textCatTitle);
         textCatTitle.setText(itemInfo.getCatTitle());
         TextView textCatName = (TextView) v.findViewById(R.id.textCatName);
@@ -116,12 +119,14 @@ public class ItemDetailsActivity extends Activity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
+        View textItemCount = v.findViewById(R.id.textItemCount);
+        textItemCount.setMinimumWidth((int) (width * 0.13f));
         View catNameLayout = v.findViewById(R.id.catNameLayout);
-        catNameLayout.setMinimumWidth((int) (width * 0.5f));
+        catNameLayout.setMinimumWidth((int) (width * 0.47f));
         View locationLayout = v.findViewById(R.id.locationLayout);
-        locationLayout.setMinimumWidth((int) (width * 0.15f));
+        locationLayout.setMinimumWidth((int) (width * 0.17f));
         View itemCostLayout = v.findViewById(R.id.itemCostLayout);
-        itemCostLayout.setMinimumWidth((int) (width * 0.25f));
+        itemCostLayout.setMinimumWidth((int) (width * 0.23f));
 
 // insert into main view
         ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);

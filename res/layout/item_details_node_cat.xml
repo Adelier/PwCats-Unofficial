@@ -6,13 +6,16 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-    <ImageView
+    <TextView
         android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/textItemCount"
+        android:layout_gravity="center_horizontal"
+        android:textSize="13sp"
         android:layout_weight="10"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:baselineAlignBottom="false"
-        android:clickable="false"/>
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
     <LinearLayout
         android:id="@+id/catNameLayout"
         android:orientation="vertical"
@@ -29,7 +32,7 @@
             android:id="@+id/textCatTitle"
             android:layout_gravity="center"
             android:textColor="#ffffa54b"
-            android:textSize="16dp"
+            android:textSize="13dp"
             android:textIsSelectable="false"
             android:gravity="center"/>
         <TextView
@@ -39,7 +42,7 @@
             android:id="@+id/textCatName"
             android:layout_gravity="center_horizontal"
             android:textColor="#ffffffff"
-            android:textSize="16dp"
+            android:textSize="13dp"
             android:textIsSelectable="false"
             android:gravity="center"/>
     </LinearLayout>
@@ -59,7 +62,7 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:id="@+id/textLocationName"
             android:layout_gravity="center_horizontal"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:gravity="center"/>
 
         <TextView
@@ -68,7 +71,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/textLocationCoordinates"
             android:layout_gravity="center_horizontal"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:gravity="center"
             />
     </LinearLayout>
@@ -80,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="25"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="4dp">
+        android:layout_marginRight="21dp">
 
         <TextView
             android:layout_width="fill_parent"
@@ -88,7 +91,7 @@
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
             android:id="@+id/textItemCostLo"
             android:layout_gravity="center_horizontal"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textColor="#ffff4928"
             android:gravity="center_vertical|right"/>
 
@@ -98,7 +101,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/textItemCostHi"
             android:layout_gravity="center_horizontal"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textColor="#ff43c9ff"
             android:gravity="center_vertical|left"/>
     </LinearLayout>
