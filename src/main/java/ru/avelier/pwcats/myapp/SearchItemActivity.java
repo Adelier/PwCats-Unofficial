@@ -14,7 +14,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 public class SearchItemActivity extends Activity {
 
@@ -247,7 +245,7 @@ public class SearchItemActivity extends Activity {
         db.close();
 
         // intent item details
-        Intent intent = new Intent(this, ItemDetailsActivity.class);
+        Intent intent = new Intent(this, ItemDetailsFragmentActivity.class);
 
         intent.putExtra("id", id);
         intent.putExtra("itemName", itemName);

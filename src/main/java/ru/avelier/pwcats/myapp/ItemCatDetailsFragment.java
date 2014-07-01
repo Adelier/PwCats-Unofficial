@@ -1,13 +1,12 @@
 package ru.avelier.pwcats.myapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,45 +19,53 @@ import ru.adelier.pw.PwcatsRequester;
 import java.io.InputStream;
 import java.util.List;
 
-public class ItemDetailsActivity extends Activity {
+public class ItemCatDetailsFragment extends Fragment {
+    private ViewGroup rootView;
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     /**
      * Called when the activity is first created.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public ViewGroup onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_details);
+//        setContentView(R.layout.item_details_cat);
+        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_cat, container, false);
 
         // load params from intent extras
-        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getIntent().getStringExtra("server"));
+        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getActivity().getIntent().getStringExtra("server"));
         if (server == null) {
-            Log.wtf(this.getClass().toString(), "server not passed :(");
-            return;
+            Log.wtf(this.toString(), "server not passed :(");
+            return rootView;
         }
-        String itemName = getIntent().getStringExtra("itemName");
+        String itemName = getActivity().getIntent().getStringExtra("itemName");
         if (server == null) {
-            Log.wtf(this.getClass().toString(), "itemName not passed :(");
-            return;
+            Log.wtf(this.toString(), "itemName not passed :(");
+            return rootView;
         }
-        Integer id = getIntent().getIntExtra("id", -1);
+        Integer id = getActivity().getIntent().getIntExtra("id", -1);
         if (id == -1) {
-            Log.wtf(this.getClass().toString(), "id not passed :(");
-            return;
+            Log.wtf(this.toString(), "id not passed :(");
+            return rootView;
         }
 
-        // title
-        setTitle(String.format("%s (%s)", itemName, server.toString()));
-        // icon
+//        title
+        getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
+//        icon
         new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
 
         // asynk ask pwcats.info and fill view with nodes
         AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(new Object[]{id, server});
+        return rootView;
     }
     private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
         public DownloadActionBarIconTask() {
@@ -82,13 +89,13 @@ public class ItemDetailsActivity extends Activity {
             int size = (int)(64 * scale + 0.5f);
             result.setDensity(4);
 
-            getActionBar().setIcon(new BitmapDrawable(result));
+            getActivity().getActionBar().setIcon(new BitmapDrawable(result));
         }
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
         if (infos == null || infos.isEmpty()) {
-            LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.message, null);
             int message_id;
             if (infos == null)
@@ -97,17 +104,17 @@ public class ItemDetailsActivity extends Activity {
                 message_id = R.string.nothing_found;
             ((TextView)v.findViewById(R.id.messageText)).setText(message_id);
 // insert into main view
-            ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
+            ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
             insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-            findViewById(R.id.progressBar).setVisibility(View.GONE);
+            rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
             return;
         }
         for (PwItemCat info : infos) {
             add_item_node_cat(info);
-            Log.d(this.getClass().getName(), "item info added " + info.toString());
+            Log.d(this.toString(), "item info added " + info.toString());
         }
-        findViewById(R.id.progressBar).setVisibility(View.GONE);
+        rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
     class RetrieveFeedTask extends AsyncTask<Object, Void, List<PwItemCat>> {
@@ -128,14 +135,13 @@ public class ItemDetailsActivity extends Activity {
             if (exception == null)
                 fillViewWithNodes(infos);
             else {
-                // TODO put something on screen
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                rootView.findViewById(R.id.progressBar).setVisibility(View.GONE);
             }
         }
     }
 
     public void add_item_node_cat(PwItemCat itemInfo) {
-        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.item_details_node_cat, null);
 
 // fill in any details dynamically here
@@ -162,7 +168,7 @@ public class ItemDetailsActivity extends Activity {
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         View textItemCount = v.findViewById(R.id.textItemCount);
         textItemCount.setMinimumWidth((int) (width * 0.13f));
@@ -174,7 +180,7 @@ public class ItemDetailsActivity extends Activity {
         itemCostLayout.setMinimumWidth((int) (width * 0.23f));
 
 // insert into main view
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
+        ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
         insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
     }

@@ -14,7 +14,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ItemDetailsActivity"
+            android:name=".ItemDetailsFragmentActivity"
             android:label="@string/item_details_activity_title">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
