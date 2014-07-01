@@ -3,10 +3,12 @@ package ru.avelier.pwcats.myapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ public class SearchItemActivity extends Activity {
 
     private Random rand;
     private DbItemsHelper dbHelper;
+    private SharedPreferences prefs;
 
 
     @Override
@@ -34,11 +37,11 @@ public class SearchItemActivity extends Activity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        formContentView(savedInstanceState);
-
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         rand = new Random();
-
         dbHelper = new DbItemsHelper(getApplicationContext());
+
+        formContentView(savedInstanceState);
     }
 
     private void formContentView(Bundle savedInstanceState) {
@@ -51,6 +54,17 @@ public class SearchItemActivity extends Activity {
                 R.array.servers, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(prefs.getInt("server", 0));
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                prefs.edit().putInt("server", position).apply();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         // TODO show recent items
 
