@@ -12,11 +12,28 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/textRes"
             android:layout_gravity="center_horizontal" android:layout_margin="10dp"/>
-    <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchView"
-            android:queryHint="подсказка поиска"/>
+    <LinearLayout
+        android:id="@+id/item_and_server_layout"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp">
+        <SearchView
+                android:layout_width="wrap_content"
+                android:layout_weight="90"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchView"
+                android:queryHint="Название предмета"
+                android:iconifiedByDefault="false"/>
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_weight="10"
+            android:layout_height="fill_parent"
+            android:id="@+id/spinner_server"
+            android:spinnerMode="dialog"/>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="fill_parent"

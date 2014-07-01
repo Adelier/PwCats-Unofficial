@@ -16,8 +16,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class PwcatsRequester {
+
+    // same in values/servers.xml
     public enum Server {vega, orion, sirius, mira, terazet, altair,
-        gelios, pegas, antaresm, kassiopeya, lira, andromeda, omega, persey};
+        gelios, pegas, antares, kassiopeya, lira, andromeda, omega, persey};
 
 	private static String formatPwcatsUrl(String server, int itemId){
         final String pwcatsUrlFormat = "http://pwcats.info/cats/%s/item/%d";

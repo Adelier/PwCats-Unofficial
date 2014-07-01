@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="servers">
+        <!-- same in PwcatsRequester.Server -->
+        <item>vega</item>
+        <item>orion</item>
+        <item>sirius</item>
+        <item>mira</item>
+        <item>terazet</item>
+        <item>altair</item>
+        <item>gelios</item>
+        <item>pegas</item>
+        <item>antares</item>
+        <item>kassiopeya</item>
+        <item>lira</item>
+        <item>andromeda</item>
+        <item>omega</item>
+        <item>persey</item>
+    </string-array>
+</resources>

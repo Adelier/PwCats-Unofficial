@@ -30,33 +30,47 @@ public class ItemDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details);
 
-        // TODO server select
-        int id = getIntent().getIntExtra("id", -1);
+        // load params from intent extras
+        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getIntent().getStringExtra("server"));
+        if (server == null) {
+            Log.wtf(this.getClass().toString(), "server not passed :(");
+            return;
+        }
+        String itemName = getIntent().getStringExtra("itemName");
+        if (server == null) {
+            Log.wtf(this.getClass().toString(), "itemName not passed :(");
+            return;
+        }
+        Integer id = getIntent().getIntExtra("id", -1);
         if (id == -1) {
             Log.wtf(this.getClass().toString(), "id not passed :(");
             return;
         }
 
-        AsyncTask<Integer, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(id);
+        // title
+        setTitle(String.format("%s (%s)", itemName, server.toString()));
+//        getActionBar().setIcon(R.drawable.my_icon);
+
+        // asynk ask pwcats.info and fill view with nodes
+        AsyncTask<Object, Void, List<PwItemCat>> asyncTask = new RetrieveFeedTask().execute(new Object[]{id, server});
     }
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
         if (infos == null || infos.isEmpty())
             return;
-        setTitle(infos.get(0).getItemName());
         for (PwItemCat info : infos) {
             add_item_node_cat(info);
-            Log.d("item info", info.toString());
+            Log.d(this.getClass().getName(), "item info added " + info.toString());
         }
         findViewById(R.id.progressBar).setVisibility(View.GONE);
     }
 
-    class RetrieveFeedTask extends AsyncTask<Integer, Void, List<PwItemCat>> {
+    class RetrieveFeedTask extends AsyncTask<Object, Void, List<PwItemCat>> {
         List<PwItemCat> infos = null;
         Exception exception = null;
-        protected List<PwItemCat> doInBackground(Integer... id) {
+        protected List<PwItemCat> doInBackground(Object... id_server) {
             try {
-                infos = PwcatsRequester.itemsCat(PwcatsRequester.Server.vega, id[0]);
+                infos = PwcatsRequester.itemsCat((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0]);
                 return infos;
             } catch (Exception e) {
                 exception = e;
@@ -102,7 +116,6 @@ public class ItemDetailsActivity extends Activity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
-        Log.wtf("width", width + "");
         View catNameLayout = v.findViewById(R.id.catNameLayout);
         catNameLayout.setMinimumWidth((int) (width * 0.5f));
         View locationLayout = v.findViewById(R.id.locationLayout);
