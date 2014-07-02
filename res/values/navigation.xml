@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation">
+        <item>Поиск предмета</item>
+        <item>Заточка</item>
+        <item>Вещи ☆</item>
+        <item>Вещи ☆☆</item>
+        <item>Вещи ☆☆☆</item>
+        <!--item>Профит</item-->
+
+        <!--item>Голд</item>
+        <item>Авторизация</item>
+        <item>Настройки</item-->
+
+        <item>pwcats.into</item>
+        <item>About</item>
+    </string-array>
+</resources>

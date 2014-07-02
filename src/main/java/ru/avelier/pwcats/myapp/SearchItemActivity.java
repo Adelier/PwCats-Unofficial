@@ -1,5 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,13 +12,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import ru.avelier.pwcats.db.DbItemsHelper;
 import ru.avelier.pwcats.db.DbRecentItemsContract.*;
@@ -138,6 +139,7 @@ public class SearchItemActivity extends Fragment {
             res.add(c.getInt(0));
         } while (c.moveToNext());
         c.close();
+        db.close();
         return res;
     }
 
@@ -215,7 +217,7 @@ public class SearchItemActivity extends Fragment {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewItemDetails(id, itemName);
+                showItemDetails(id, itemName);
             }
         });
 
@@ -229,7 +231,7 @@ public class SearchItemActivity extends Fragment {
 
 
     public void viewItemDetails(int id) {
-        viewItemDetails(id, getItemNameById(id));
+        showItemDetails(id, getItemNameById(id));
     }
 
     private String getItemNameById(int id) {
@@ -242,8 +244,11 @@ public class SearchItemActivity extends Fragment {
         return name;
     }
 
-    public void viewItemDetails(int id, String itemName) {
-        // db recent
+    public void showItemDetails(int id, String itemName) {
+// hide keyboard
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+// db recent
         Log.d(this.toString(), "inserting new recent id: " + id);
         SQLiteDatabase db = recent_items_db.getWritableDatabase();
         db.execSQL("DELETE FROM " + RecentItemsEntry.TABLE_NAME +
@@ -251,28 +256,17 @@ public class SearchItemActivity extends Fragment {
         db.execSQL("INSERT INTO " + RecentItemsEntry.TABLE_NAME +
                 " (" + RecentItemsEntry.COL_RECENT_ID + ") VALUES(" + id + ")");
         db.close();
-
-        // intent item details
-//        Intent intent = new Intent(this, ItemDetailsFragmentActivity.class);
-//
-//        intent.putExtra("id", id);
-//        intent.putExtra("itemName", itemName);
-//
+// get selected server
         Spinner server_spinner = ((Spinner) rootView.findViewById(R.id.spinner_server));
         String server = (String)server_spinner.getItemAtPosition(server_spinner.getSelectedItemPosition());
-//        Log.d(getString(R.string.pref_server), server);
-//        intent.putExtra(getString(R.string.pref_server), server);
-//
-//        startActivity(intent);
-
+// compose ItemDetailsFragment
         Fragment fragment = new ItemDetailsPagesFragment();
         Bundle args = new Bundle();
         args.putInt("id", id);
         args.putString("itemName", itemName);
         args.putString("server", server);
         fragment.setArguments(args);
-
-        // Insert the fragment by replacing any existing fragment
+// Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment)
@@ -323,5 +317,9 @@ public class SearchItemActivity extends Fragment {
         Log.d(this.toString(), "onResume()");
         getActivity().setTitle(R.string.search_activity_label);
         getActivity().getActionBar().setIcon(R.drawable.ic_launcher);
+    }
+
+    public void clearQuery() {
+        ((EditText)rootView.findViewById(R.id.editText)).setText("");
     }
 }
