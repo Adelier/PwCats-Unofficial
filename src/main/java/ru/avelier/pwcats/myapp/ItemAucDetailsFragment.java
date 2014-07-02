@@ -117,14 +117,14 @@ public class ItemAucDetailsFragment extends Fragment {
         int priceBuyoutX1 = priceBuyoutAll / count;
 // price x1
         TextView textPriceBidX1 = (TextView) v.findViewById(R.id.price_bid_x1);
-        textPriceBidX1.setText("1 x " + priceBidX1);
+        textPriceBidX1.setText( String.format("1 x %,d", priceBidX1) );
         TextView textPriceBuyoutX1 = (TextView) v.findViewById(R.id.price_buyout_x1);
-        textPriceBuyoutX1.setText("1 x " + priceBuyoutX1);
+        textPriceBuyoutX1.setText( String.format("1 x %,d", priceBuyoutX1) );
 // price all
         TextView textPriceBidAll = (TextView) v.findViewById(R.id.price_bid_all);
-        textPriceBidAll.setText(count + " x " + priceBidAll);
+        textPriceBidAll.setText( String.format("%d x %,d", count, priceBidAll) );
         TextView textPriceBuyoutAll = (TextView) v.findViewById(R.id.price_buyout_all);
-        textPriceBuyoutAll.setText(count + " x " + priceBuyoutAll);
+        textPriceBuyoutAll.setText( String.format("%d x %,d", count, priceBuyoutAll) );
 // count
 //        TextView textItemCount = (TextView) v.findViewById(R.id.textItemCount);
 //        textItemCount.setText("x" + count);

@@ -123,10 +123,10 @@ public class ItemCatDetailsFragment extends Fragment {
 
         TextView textItemCostLo = (TextView) v.findViewById(R.id.textItemCostLo);
         if (itemInfo.getPriceLo() != null)
-            textItemCostLo.setText("" + itemInfo.getPriceLo());
+            textItemCostLo.setText( String.format("%,d", itemInfo.getPriceLo()) );
         TextView textItemCostHi = (TextView) v.findViewById(R.id.textItemCostHi);
         if (itemInfo.getPriceHi() != null)
-            textItemCostHi.setText("" + itemInfo.getPriceHi());
+            textItemCostHi.setText( String.format("%,d", itemInfo.getPriceHi()) );
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
