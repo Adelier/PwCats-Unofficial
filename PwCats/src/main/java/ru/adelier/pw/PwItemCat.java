@@ -11,8 +11,8 @@ import java.util.OptionalInt;
 public class PwItemCat extends PwItem {
     public enum Location {ГДЗ, ГДВ, ГО, ГП, ГМ, ГЦ, ГИ, КБ};
 
-    public PwItemCat(int id, String name, String imageLink, int count, String nickname, String catTitle, int[] coord, Location location, Integer priceLo, Integer priceHi) {
-        super(id, name, imageLink, count, priceLo, priceHi);
+    public PwItemCat(int id, String name, String desc, int count, String nickname, String catTitle, int[] coord, Location location, Integer priceLo, Integer priceHi) {
+        super(id, name, desc, count, priceLo, priceHi);
 
         this.nickname = nickname;
         this.catTitle = catTitle;

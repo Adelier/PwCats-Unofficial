@@ -4,10 +4,10 @@ package ru.adelier.pw;
  * Created by Adelier on 08.06.2014.
  */
 public class PwItem {
-    public PwItem(int id, String name, String imageLink, int count, Integer priceLo, Integer priceHi) {
+    public PwItem(int id, String name, String desc, int count, Integer priceLo, Integer priceHi) {
         this.id = id;
         this.itemName = name;
-        this.imageLink = imageLink;
+        this.desc = desc;
         this.count = count;
         this.priceLo = priceLo;
         this.priceHi = priceHi;
@@ -15,7 +15,7 @@ public class PwItem {
 
     private int id;
     private String itemName;
-    private String imageLink;
+    private String desc;
     private int count;
     private Integer priceLo;
     private Integer priceHi;
@@ -40,8 +40,8 @@ public class PwItem {
         return priceHi;
     }
 
-    public String getImageLink() {
-        return imageLink;
+    public String getDesc() {
+        return desc;
     }
 
 
@@ -76,7 +76,7 @@ public class PwItem {
         return "PwItem{" +
                 "id=" + id +
                 ", itemName='" + itemName + '\'' +
-                ", imageLink='" + imageLink + '\'' +
+                ", desc='" + desc + '\'' +
                 ", count=" + count +
                 ", priceLo=" + priceLo +
                 ", priceHi=" + priceHi +
