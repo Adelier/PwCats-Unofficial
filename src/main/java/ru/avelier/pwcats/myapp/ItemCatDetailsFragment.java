@@ -13,7 +13,6 @@ import android.widget.TextView;
 import ru.adelier.pw.PwItemCat;
 import ru.adelier.pw.PwcatsRequester;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class ItemCatDetailsFragment extends Fragment {
@@ -110,9 +109,9 @@ public class ItemCatDetailsFragment extends Fragment {
         TextView itemCount = (TextView) v.findViewById(R.id.textItemCount);
         itemCount.setText("x" + itemInfo.getCount());
 
-        TextView textCatTitle = (TextView) v.findViewById(R.id.textCatTitle);
+        TextView textCatTitle = (TextView) v.findViewById(R.id.textItemName);
         textCatTitle.setText(itemInfo.getCatTitle());
-        TextView textCatName = (TextView) v.findViewById(R.id.textCatName);
+        TextView textCatName = (TextView) v.findViewById(R.id.textItemId);
         textCatName.setText(itemInfo.getNickname());
 
         // TODO http://www.pwmap.ru/

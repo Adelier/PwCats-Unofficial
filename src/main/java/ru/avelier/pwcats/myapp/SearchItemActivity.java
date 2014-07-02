@@ -206,12 +206,12 @@ public class SearchItemActivity extends Fragment {
         loadIconTasks.add(loadIconTask);
         loadIconTask.execute(getIconUrl(id));
 // fill id (hidden)
-        TextView itemId = (TextView) v.findViewById(R.id.textCatName);
-        itemId.setText(id + "");
-        itemId.setVisibility(View.GONE);
+        TextView textItemId = (TextView) v.findViewById(R.id.textItemId);
+        textItemId.setText(id + "");
+        textItemId.setVisibility(View.GONE);
 // fill item name
-        TextView itemNameView = (TextView) v.findViewById(R.id.textCatTitle);
-        itemNameView.setText(itemName);
+        TextView textItemName = (TextView) v.findViewById(R.id.textItemName);
+        textItemName.setText(itemName);
 //
         v.setOnClickListener(new View.OnClickListener() {
             @Override
