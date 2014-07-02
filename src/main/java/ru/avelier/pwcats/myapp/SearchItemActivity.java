@@ -246,8 +246,9 @@ public class SearchItemActivity extends Fragment {
 
     public void showItemDetails(int id, String itemName) {
 // hide keyboard
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        EditText editText = (EditText) rootView.findViewById(R.id.editText);
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 // db recent
         Log.d(this.toString(), "inserting new recent id: " + id);
         SQLiteDatabase db = recent_items_db.getWritableDatabase();
