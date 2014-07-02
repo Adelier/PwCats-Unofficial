@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="popular_item_ids">
+        <item>5639</item>
+        <item>11208</item>
+        <item>25820</item>
+        <item>25821</item>
+        <item>27424</item>
+        <item>19240</item>
+        <item>20746</item>
+        <item>20216</item>
+        <item>24716</item>
+        <item>19004</item>
+    </integer-array>
+</resources>
