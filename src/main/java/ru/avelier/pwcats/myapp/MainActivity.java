@@ -1,5 +1,7 @@
 package ru.avelier.pwcats.myapp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -63,7 +65,7 @@ public class MainActivity extends FragmentActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            Log.i("drawer", navigationItems[position]);
+            Log.i("drawer", position + ": " + navigationItems[position]);
             selectItem(position);
         }
     }
@@ -71,6 +73,16 @@ public class MainActivity extends FragmentActivity {
     private void selectItem(int position) {
         if (position == 0) // search
             showSearchFragment(true);
+        if (position == 1) // Заточка
+            ;//showSearchFragment(true);
+        if (position == 2) // Вещи ☆
+            ;//showSearchFragment(true);
+        if (position == 3) // Вещи ☆☆
+            ;//showSearchFragment(true);
+        if (position == 4) // Вещи ☆☆☆
+            ;//showSearchFragment(true);
+        if (position == 5) // pwcats.info
+            intentPwcatsInfo();
 
 
         mDrawerList.setItemChecked(position, true);
@@ -87,6 +99,13 @@ public class MainActivity extends FragmentActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragmentSearch)
                 .commit();
+    }
+
+    private void intentPwcatsInfo() {
+        String url = "http://pwcats.info";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 
     @Override
