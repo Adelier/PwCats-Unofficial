@@ -1,6 +1,5 @@
 package ru.avelier.pwcats.myapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -308,7 +307,7 @@ public class SearchItemActivity extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(this.toString(), "onResume()");
+        Log.d(this.toString(), "onPause()");
         stopLoadingIcons();
     }
 
@@ -317,7 +316,6 @@ public class SearchItemActivity extends Fragment {
         super.onResume();
         Log.d(this.toString(), "onResume()");
         getActivity().setTitle(R.string.search_activity_label);
-        getActivity().getActionBar().setIcon(R.drawable.ic_launcher);
     }
 
     public void clearQuery() {

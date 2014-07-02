@@ -7,9 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -29,6 +27,10 @@ public class ItemDetailsPagesFragment extends Fragment {
 
     private static final int NUM_PAGES = 2;
     private SharedPreferences prefs;
+
+    private int id;
+    private PwcatsRequester.Server server;
+    private String itemName;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -69,8 +71,6 @@ public class ItemDetailsPagesFragment extends Fragment {
             }
         });
 
-        // TODO think of intents in Fragment...
-        PwcatsRequester.Server server;
         String sServer = getArguments().getString("server");
         if (sServer == null) {
             Log.wtf(this.toString(), "server not passed :(");
@@ -78,21 +78,25 @@ public class ItemDetailsPagesFragment extends Fragment {
         } else {
             server = PwcatsRequester.Server.valueOf(sServer);
         }
-        String itemName = getArguments().getString("itemName");
+        itemName = getArguments().getString("itemName");
         if (itemName == null) {
             Log.wtf(this.toString(), "itemName not passed :(");
             return rootView;
         }
-        Integer id = getArguments().getInt("id", -1);
+        id = getArguments().getInt("id", -1);
         if (id == -1) {
             Log.wtf(this.toString(), "id not passed :(");
             return rootView;
         }
+        setActionBarInfoAsItemInfo(server, itemName, id);
+        return rootView;
+    }
+
+    private void setActionBarInfoAsItemInfo(PwcatsRequester.Server server, String itemName, Integer id) {
 //        title
         getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
 //        icon
         new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
-        return rootView;
     }
 
     private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
@@ -120,11 +124,6 @@ public class ItemDetailsPagesFragment extends Fragment {
             getActivity().getActionBar().setIcon(new BitmapDrawable(result));
         }
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//    }
 
     /**
      * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
@@ -155,5 +154,17 @@ public class ItemDetailsPagesFragment extends Fragment {
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getActionBar().setIcon(R.drawable.ic_launcher);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setActionBarInfoAsItemInfo(server, itemName, id);
     }
 }
