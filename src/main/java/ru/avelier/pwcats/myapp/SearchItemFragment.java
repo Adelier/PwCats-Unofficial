@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SearchItemActivity extends Fragment {
+public class SearchItemFragment extends Fragment {
 
     private ViewGroup rootView;
 
@@ -204,13 +204,13 @@ public class SearchItemActivity extends Fragment {
 // load icon
         AsyncTask<String, Void, Bitmap> loadIconTask = new DownloadImageTask((ImageView) v.findViewById(R.id.itemIcon));
         loadIconTasks.add(loadIconTask);
-        loadIconTask.execute(getIconUrl(id));
+        loadIconTask.execute(DownloadImageTask.getIconUrl(id));
 // fill id (hidden)
-        TextView textItemId = (TextView) v.findViewById(R.id.textItemId);
+        TextView textItemId = (TextView) v.findViewById(R.id.textCatNickname);
         textItemId.setText(id + "");
         textItemId.setVisibility(View.GONE);
 // fill item name
-        TextView textItemName = (TextView) v.findViewById(R.id.textItemName);
+        TextView textItemName = (TextView) v.findViewById(R.id.textCatTitle);
         textItemName.setText(itemName);
 //
         v.setOnClickListener(new View.OnClickListener() {
@@ -222,10 +222,6 @@ public class SearchItemActivity extends Fragment {
 
 // insert into main view
         insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-    }
-
-    public static String getIconUrl(int id) {
-        return String.format("http://www.pwdatabase.com/images/icons/generalm/%d.gif", id);
     }
 
 
@@ -274,36 +270,6 @@ public class SearchItemActivity extends Fragment {
                 .commit();
     }
 
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urlDisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urlDisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-            // TODO think of bmImage.setImageURI()
-            float scale = (float)bmImage.getHeight() / result.getHeight();
-            bmImage.setScaleX( scale );
-            bmImage.setScaleY( scale );
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -316,6 +282,7 @@ public class SearchItemActivity extends Fragment {
         super.onResume();
         Log.d(this.toString(), "onResume()");
         getActivity().setTitle(R.string.search_activity_label);
+        ((MainActivity)getActivity()).setActiveFragment(this);
     }
 
     public void clearQuery() {

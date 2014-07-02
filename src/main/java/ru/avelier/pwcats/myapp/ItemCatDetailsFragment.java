@@ -109,9 +109,9 @@ public class ItemCatDetailsFragment extends Fragment {
         TextView itemCount = (TextView) v.findViewById(R.id.textItemCount);
         itemCount.setText("x" + itemInfo.getCount());
 
-        TextView textCatTitle = (TextView) v.findViewById(R.id.textItemName);
+        TextView textCatTitle = (TextView) v.findViewById(R.id.textCatTitle);
         textCatTitle.setText(itemInfo.getCatTitle());
-        TextView textCatName = (TextView) v.findViewById(R.id.textItemId);
+        TextView textCatName = (TextView) v.findViewById(R.id.textCatNickname);
         textCatName.setText(itemInfo.getNickname());
 
         // TODO http://www.pwmap.ru/

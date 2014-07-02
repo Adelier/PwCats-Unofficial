@@ -96,7 +96,7 @@ public class ItemDetailsPagesFragment extends Fragment {
 //        title
         getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
 //        icon
-        new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
+        new DownloadActionBarIconTask().execute(DownloadImageTask.getIconUrl(id));
     }
 
     private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {

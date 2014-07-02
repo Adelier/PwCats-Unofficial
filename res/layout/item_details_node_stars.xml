@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layoutItemStarInfo">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/itemIcon"
+            android:adjustViewBounds="true"
+            android:scaleType="center"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"/>
+        <LinearLayout
+            android:id="@+id/catNameLayout"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="4dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textCatTitle"
+                android:layout_gravity="center"
+                android:textColor="#ffffa54b"
+                android:textSize="13dp"
+                android:textIsSelectable="false"
+                android:gravity="center"/>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textCatNickname"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#ffffffff"
+                android:textSize="13dp"
+                android:textIsSelectable="false"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/locationLayout"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="15"
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textLocationName"
+                android:layout_gravity="center_horizontal"
+                android:textSize="13sp"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textLocationCoordinates"
+                android:layout_gravity="center_horizontal"
+                android:textSize="13sp"
+                android:gravity="center"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:id="@+id/textItemCostHi"
+            android:layout_gravity="center_horizontal"
+            android:textSize="13sp"
+            android:textColor="#ff43c9ff"
+            android:gravity="center_vertical|left"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textHtmlDesc"
+        android:visibility="gone"
+
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="4dp"/>
+
+</LinearLayout>

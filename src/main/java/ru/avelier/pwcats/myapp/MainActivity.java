@@ -1,13 +1,12 @@
 package ru.avelier.pwcats.myapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.preference.PreferenceManager;
+import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
@@ -31,7 +30,8 @@ public class MainActivity extends FragmentActivity {
     private CharSequence mTitle;
 
     private Fragment activeFragment;
-    private SearchItemActivity fragmentSearch;
+    private SearchItemFragment fragmentSearch;
+    private ItemStarDetailsFragment itemStarDetailsFragment;
 //    ...
 
     @Override
@@ -124,11 +124,11 @@ public class MainActivity extends FragmentActivity {
         if (position == 1) // Заточка
             ;//showSearchFragment(true);
         if (position == 2) // Вещи ☆
-            ;//showSearchFragment(true);
+            showStarItemDetails(1);
         if (position == 3) // Вещи ☆☆
-            ;//showSearchFragment(true);
+            showStarItemDetails(2);
         if (position == 4) // Вещи ☆☆☆
-            ;//showSearchFragment(true);
+            showStarItemDetails(3);
         if (position == 5) // pwcats.info
             intentPwcatsInfo();
 
@@ -136,9 +136,44 @@ public class MainActivity extends FragmentActivity {
         mDrawerList.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
+
+    private void showStarItemDetails(int stars) {
+        if (itemStarDetailsFragment == null)
+            itemStarDetailsFragment = new ItemStarDetailsFragment();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        String[] servers = getResources().getStringArray(R.array.servers);
+        String server = servers[prefs.getInt(getString(R.string.pref_server), 0)];
+        if (itemStarDetailsFragment.getArguments() == null) {
+            Bundle args = new Bundle();
+            args.putString(getString(R.string.pref_server), server);
+            args.putInt(getString(R.string.pref_stars), stars);
+            itemStarDetailsFragment.setArguments(args);
+        } else {
+            itemStarDetailsFragment.getArguments().putString(getString(R.string.pref_server), server);
+            itemStarDetailsFragment.getArguments().putInt(getString(R.string.pref_stars), stars);
+        }
+
+        if (activeFragment == itemStarDetailsFragment) {
+            itemStarDetailsFragment.updateArguments();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction t = fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, itemStarDetailsFragment);
+        if (activeFragment == fragmentSearch)
+            t = t.addToBackStack(null);
+        t.commit();
+        activeFragment = itemStarDetailsFragment;
+    }
+
+    public void setActiveFragment(Fragment activeFragment) {
+        this.activeFragment = activeFragment;
+    }
+
     private void showSearchFragment(boolean clear) {
         if (fragmentSearch == null)
-            fragmentSearch = new SearchItemActivity();
+            fragmentSearch = new SearchItemFragment();
 
         if (clear)
             fragmentSearch.clearQuery();
@@ -147,6 +182,7 @@ public class MainActivity extends FragmentActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragmentSearch)
                 .commit();
+        activeFragment = fragmentSearch;
     }
 
     private void intentPwcatsInfo() {
