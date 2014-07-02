@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="navigation">
+        <!-- Edit with MaitActivity.selectItem(int position) -->
         <item>Поиск предмета</item>
         <item>Заточка</item>
         <item>Вещи ☆</item>
