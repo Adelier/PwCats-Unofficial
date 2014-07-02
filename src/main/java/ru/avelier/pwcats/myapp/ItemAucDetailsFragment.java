@@ -39,12 +39,12 @@ public class ItemAucDetailsFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(R.layout.item_details_auc, container, false);
 
         // load params from intent extras
-        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getActivity().getIntent().getStringExtra("server"));
+        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getArguments().getString("server"));
         if (server == null) {
             Log.wtf(this.toString(), "server not passed :(");
             return rootView;
         }
-        Integer id = getActivity().getIntent().getIntExtra("id", -1);
+        Integer id = getArguments().getInt("id", -1);
         if (id == -1) {
             Log.wtf(this.toString(), "id not passed :(");
             return rootView;

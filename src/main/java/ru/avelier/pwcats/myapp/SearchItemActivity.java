@@ -1,8 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,6 +9,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,7 +28,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SearchItemActivity extends Activity {
+public class SearchItemActivity extends Fragment {
+
+    private ViewGroup rootView;
 
     private DbItemsHelper items_db;
     private DbRecentItemsHelper recent_items_db;
@@ -37,7 +40,7 @@ public class SearchItemActivity extends Activity {
 
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         items_db.close();
         recent_items_db.close();
@@ -48,23 +51,24 @@ public class SearchItemActivity extends Activity {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(this.getClass().getName(), "onCreate()");
+        super.onCreate(savedInstanceState);
+        Log.d(this.toString(), "onCreate()");
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+
+        items_db = new DbItemsHelper(getActivity().getApplicationContext());
+        recent_items_db = new DbRecentItemsHelper(getActivity().getApplicationContext());
+
         loadIconTasks = new LinkedList<AsyncTask<String, Void, Bitmap>>();
-
-        items_db = new DbItemsHelper(getApplicationContext());
-        recent_items_db = new DbRecentItemsHelper(getApplicationContext());
-
-        formContentView(savedInstanceState);
     }
 
-    private void formContentView(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_item);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = (ViewGroup) inflater.inflate(R.layout.search_item, container, false);
+
         // fill server spinner
-        Spinner spinner = (Spinner) findViewById(R.id.spinner_server);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        Spinner spinner = (Spinner) rootView.findViewById(R.id.spinner_server);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.servers, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -72,7 +76,7 @@ public class SearchItemActivity extends Activity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
                 prefs.edit().putInt(getString(R.string.pref_server), position).apply();
             }
             @Override
@@ -80,11 +84,8 @@ public class SearchItemActivity extends Activity {
             }
         });
 
-        // show recent items
-//        showRecentItems();
-        search("");
 
-        EditText edit = (EditText) findViewById(R.id.editText);
+        EditText edit = (EditText) rootView.findViewById(R.id.editText);
         edit.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
 //                EditText edit = (EditText) findViewById(R.id.editText);
@@ -96,8 +97,10 @@ public class SearchItemActivity extends Activity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
+        // show recent items
+        search("");
 
-        SearchView searchView = (SearchView)findViewById(R.id.searchView);
+        SearchView searchView = (SearchView)rootView.findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -111,6 +114,8 @@ public class SearchItemActivity extends Activity {
                 return true;
             }
         });
+
+        return rootView;
     }
 
     private void showRecentItems() {
@@ -139,13 +144,9 @@ public class SearchItemActivity extends Activity {
     // TODO optimise
     // TODO case-insensitive. Maybe create 1 more row with all in lower case. Ибо sqlite буржуйский.
     public void search(String subname) {
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
+        ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
 
-        // stop loading icons
-        for (AsyncTask<String, Void, Bitmap> task : loadIconTasks) {
-            task.cancel(true);
-        }
-        loadIconTasks.clear();
+        stopLoadingIcons();
 
         if (subname == null || subname.equals("")) {
             insertPoint.removeAllViewsInLayout();
@@ -183,13 +184,20 @@ public class SearchItemActivity extends Activity {
         db.close();
     }
 
+    private void stopLoadingIcons() {
+        for (AsyncTask<String, Void, Bitmap> task : loadIconTasks) {
+            task.cancel(true);
+        }
+        loadIconTasks.clear();
+    }
+
     private void add_item_line(int id){
         add_item_line(id, getItemNameById(id));
     }
 
     private void add_item_line(final int id, final String itemName) {
-        ViewGroup insertPoint = (ViewGroup) findViewById(R.id.scrolledLinearView);
-        LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
+        LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.search_item_line, null);
 
 // load icon
@@ -236,7 +244,7 @@ public class SearchItemActivity extends Activity {
 
     public void viewItemDetails(int id, String itemName) {
         // db recent
-        Log.d(this.getClass().getName(), "inserting new recent id: " + id);
+        Log.d(this.toString(), "inserting new recent id: " + id);
         SQLiteDatabase db = recent_items_db.getWritableDatabase();
         db.execSQL("DELETE FROM " + RecentItemsEntry.TABLE_NAME +
                 " WHERE " + RecentItemsEntry.COL_RECENT_ID + " = " + id);
@@ -245,16 +253,31 @@ public class SearchItemActivity extends Activity {
         db.close();
 
         // intent item details
-        Intent intent = new Intent(this, ItemDetailsFragmentActivity.class);
-
-        intent.putExtra("id", id);
-        intent.putExtra("itemName", itemName);
-
-        Spinner server_spinner = ((Spinner) findViewById(R.id.spinner_server));
+//        Intent intent = new Intent(this, ItemDetailsFragmentActivity.class);
+//
+//        intent.putExtra("id", id);
+//        intent.putExtra("itemName", itemName);
+//
+        Spinner server_spinner = ((Spinner) rootView.findViewById(R.id.spinner_server));
         String server = (String)server_spinner.getItemAtPosition(server_spinner.getSelectedItemPosition());
-        Log.d(getString(R.string.pref_server), server);
-        intent.putExtra(getString(R.string.pref_server), server);
-        startActivity(intent);
+//        Log.d(getString(R.string.pref_server), server);
+//        intent.putExtra(getString(R.string.pref_server), server);
+//
+//        startActivity(intent);
+
+        Fragment fragment = new ItemDetailsPagesFragment();
+        Bundle args = new Bundle();
+        args.putInt("id", id);
+        args.putString("itemName", itemName);
+        args.putString("server", server);
+        fragment.setArguments(args);
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
 
@@ -285,5 +308,20 @@ public class SearchItemActivity extends Activity {
             bmImage.setScaleX( scale );
             bmImage.setScaleY( scale );
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(this.toString(), "onResume()");
+        stopLoadingIcons();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(this.toString(), "onResume()");
+        getActivity().setTitle(R.string.search_activity_label);
+        getActivity().getActionBar().setIcon(R.drawable.ic_launcher);
     }
 }

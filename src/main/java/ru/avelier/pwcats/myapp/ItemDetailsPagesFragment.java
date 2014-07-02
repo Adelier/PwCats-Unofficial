@@ -8,12 +8,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import ru.adelier.pw.PwcatsRequester;
 
 import java.io.InputStream;
@@ -21,7 +23,9 @@ import java.io.InputStream;
 /**
  * Created by Adelier on 02.07.2014.
  */
-public class ItemDetailsFragmentActivity extends FragmentActivity {
+public class ItemDetailsPagesFragment extends Fragment {
+
+    private ViewGroup rootView;
 
     private static final int NUM_PAGES = 2;
     private SharedPreferences prefs;
@@ -38,14 +42,18 @@ public class ItemDetailsFragmentActivity extends FragmentActivity {
     private PagerAdapter mPagerAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        setContentView(R.layout.item_details_base);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_base, container, false);
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.item_details_pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager = (ViewPager) rootView.findViewById(R.id.item_details_pager);
+        mPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(prefs.getInt("item_details_selected_slide", 0));
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -61,26 +69,32 @@ public class ItemDetailsFragmentActivity extends FragmentActivity {
             }
         });
 
-        PwcatsRequester.Server server = PwcatsRequester.Server.valueOf(getIntent().getStringExtra("server"));
-        if (server == null) {
+        // TODO think of intents in Fragment...
+        PwcatsRequester.Server server;
+        String sServer = getArguments().getString("server");
+        if (sServer == null) {
             Log.wtf(this.toString(), "server not passed :(");
-            return;
+            return rootView;
+        } else {
+            server = PwcatsRequester.Server.valueOf(sServer);
         }
-        String itemName = getIntent().getStringExtra("itemName");
+        String itemName = getArguments().getString("itemName");
         if (itemName == null) {
             Log.wtf(this.toString(), "itemName not passed :(");
-            return;
+            return rootView;
         }
-        Integer id = getIntent().getIntExtra("id", -1);
+        Integer id = getArguments().getInt("id", -1);
         if (id == -1) {
             Log.wtf(this.toString(), "id not passed :(");
-            return;
+            return rootView;
         }
 //        title
-        setTitle(String.format("%s (%s)", itemName, server.toString()));
+        getActivity().setTitle(String.format("%s (%s)", itemName, server.toString()));
 //        icon
         new DownloadActionBarIconTask().execute(SearchItemActivity.getIconUrl(id));
+        return rootView;
     }
+
     private class DownloadActionBarIconTask extends AsyncTask<String, Void, Bitmap> {
         public DownloadActionBarIconTask() {
         }
@@ -103,14 +117,14 @@ public class ItemDetailsFragmentActivity extends FragmentActivity {
             int size = (int)(64 * scale + 0.5f);
             result.setDensity(4);
 
-            getActionBar().setIcon(new BitmapDrawable(result));
+            getActivity().getActionBar().setIcon(new BitmapDrawable(result));
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//    }
 
     /**
      * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
@@ -123,12 +137,18 @@ public class ItemDetailsFragmentActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Fragment f;
             switch (position) {
-                case 0: return new ItemCatDetailsFragment();
-                case 1: return new ItemAucDetailsFragment();
+                case 0:
+                    f = new ItemCatDetailsFragment();
+                    break;
+                case 1:
+                    f = new ItemAucDetailsFragment();
+                    break;
                 default: return null;
             }
-//            return new ScreenSlidePageFragment();
+            f.setArguments(getArguments());
+            return f;
         }
 
         @Override
