@@ -11,5 +11,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/messageText"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:gravity="center"/>
 </LinearLayout>

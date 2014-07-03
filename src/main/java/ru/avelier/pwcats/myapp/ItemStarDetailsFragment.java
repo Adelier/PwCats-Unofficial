@@ -52,6 +52,11 @@ public class ItemStarDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateArguments();
+        switch (stars) {
+            case 1: getActivity().setTitle(getString(R.string.nav_1star));
+            case 2: getActivity().setTitle(getString(R.string.nav_2star));
+            case 3: getActivity().setTitle(getString(R.string.nav_3star));
+        }
     }
     public void updateArguments() {
         stopDownloading();
