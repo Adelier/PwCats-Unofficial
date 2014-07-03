@@ -88,6 +88,8 @@ public class PwcatsRequester {
     }
 
     private static Document openDocument(String url, String ci_session) {
+        if (ci_session == null)
+            return openDocument(url);
         Cookie[] cookies = new Cookie[]{
                 new Cookie("pwcats.info", "ci_session", ci_session, "/", -1, false),
         };
