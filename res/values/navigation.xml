@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="navigation">
-        <!-- Edit with MaitActivity.selectItem(int position) -->
-        <item>Поиск предмета</item>
-        <item>Заточка</item>
-        <item>Вещи ☆</item>
-        <item>Вещи ☆☆</item>
-        <item>Вещи ☆☆☆</item>
-        <!--item>Профит</item-->
-
-        <!--item>Голд</item>
-        <item>Авторизация</item>
-        <item>Настройки</item-->
-
-        <item>pwcats.into</item>
-    </string-array>
+    <string name="nav_search">Поиск предмета</string>
+    <string name="nav_refine">Заточка</string>
+    <string name="nav_profit">Профит</string>
+    <string name="nav_1star">Вещи ☆</string>
+    <string name="nav_2star">Вещи ☆☆</string>
+    <string name="nav_3star">Вещи ☆☆☆</string>
+    <string name="nav_auth_login">Вход</string>
+    <string name="nav_auth_logout">Выход</string>
+    <string name="nav_pwcats">pwcats.info</string>
 </resources>

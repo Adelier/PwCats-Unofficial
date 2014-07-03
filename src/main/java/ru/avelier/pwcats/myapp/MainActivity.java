@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.*;
@@ -14,9 +15,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.*;
+import ru.adelier.pw.PwcatsRequester;
 import ru.avelier.pwcats.db.DbItemsHelper;
 import ru.avelier.pwcats.db.DbRecentItemsHelper;
 
@@ -27,7 +27,7 @@ public class MainActivity extends FragmentActivity {
 
     private String[] navigationItems;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private LinearLayout mDrawerLeftLayout;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
@@ -39,6 +39,9 @@ public class MainActivity extends FragmentActivity {
 
     public static DbItemsHelper items_db;
     public static DbRecentItemsHelper recent_items_db;
+    private SharedPreferences prefs;
+
+    private boolean isLogined;
 
     @Override
     protected void onDestroy() {
@@ -54,17 +57,99 @@ public class MainActivity extends FragmentActivity {
 
         items_db = new DbItemsHelper(getApplicationContext());
         recent_items_db = new DbRecentItemsHelper(getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        navigationItems = getResources().getStringArray(R.array.navigation);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLeftLayout = (LinearLayout) findViewById(R.id.left_drawer);
 
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, navigationItems));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        // AUTHORISE
+        tryLogin();
 
+        // NAVIGATION
+        TextView mNavSearch = (TextView) findViewById(R.id.nav_search);
+        TextView mNavRefine = (TextView) findViewById(R.id.nav_refine);
+        TextView mNavProfit = (TextView) findViewById(R.id.nav_profit);
+        TextView mNav1star = (TextView) findViewById(R.id.nav_1star);
+        TextView mNav2star = (TextView) findViewById(R.id.nav_2star);
+        TextView mNav3star = (TextView) findViewById(R.id.nav_3star);
+        TextView mNavAuthLogin = (TextView) findViewById(R.id.nav_auth_login);
+        TextView mNavAuthLogout = (TextView) findViewById(R.id.nav_auth_logout);
+        TextView mNavPwcats = (TextView) findViewById(R.id.nav_pwcats);
+        // ...
+
+        // NAVIGATION onClick()
+        mNavSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_search));
+                showSearchFragment(true);
+                afterAnyNavClick();
+            }
+        });
+        mNavRefine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_refine));
+//                showSearchFragment(true); TODO
+                afterAnyNavClick();
+            }
+        });
+        mNavProfit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_profit));
+//                showSearchFragment(true); TODO
+                afterAnyNavClick();
+            }
+        });
+        mNav1star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_1star));
+                showStarItemDetails(1);
+                afterAnyNavClick();
+            }
+        });
+        mNav2star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_2star));
+                showStarItemDetails(2);
+                afterAnyNavClick();
+            }
+        });
+        mNav3star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_3star));
+                showStarItemDetails(3);
+                afterAnyNavClick();
+            }
+        });
+        mNavAuthLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authLogin();
+                afterAnyNavClick();
+            }
+        });
+        mNavAuthLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authLogout();
+//                afterAnyNavClick();
+            }
+        });
+        mNavPwcats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(getString(R.string.nav_pwcats));
+                intentPwcatsInfo();
+                afterAnyNavClick();
+            }
+        });
+
+        // drawer
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
@@ -93,6 +178,70 @@ public class MainActivity extends FragmentActivity {
 
         showSearchFragment(false);
     }
+
+    // AUTHORISATION
+
+    /** returns true if login succseed */
+    private void tryLogin() {
+        AsyncTask<String, Void, Boolean> task = new AsyncTask<String, Void, Boolean>(){
+            @Override
+            protected Boolean doInBackground(String... ci_session) {
+                boolean isValid = PwcatsRequester.isValidCiSession(ci_session[0]);
+                return isValid;
+            }
+            @Override
+            protected void onPostExecute(Boolean isValid) {
+                isLogined = isValid;
+                showOrHideLogInOut(isLogined);
+                if (!isValid)
+                    authLogout();
+                TextView mNavAuthLogin = (TextView) findViewById(R.id.nav_auth_login);
+                TextView mNavAuthLogout = (TextView) findViewById(R.id.nav_auth_logout);
+            }
+        };
+        String ci_session = prefs.getString(getString(R.string.ci_session), null);
+        task.execute(ci_session);
+    }
+    private void authLogout() {
+        prefs.edit().remove(getString(R.string.ci_session)).apply();
+        isLogined = false;
+        showOrHideLogInOut(isLogined);
+    }
+    private void authLogin() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivityForResult(intent, 1);
+    }
+    private void showOrHideLogInOut(boolean isLogined) {
+        TextView mNavAuthLogin = (TextView) findViewById(R.id.nav_auth_login);
+        TextView mNavAuthLogout = (TextView) findViewById(R.id.nav_auth_logout);
+        if (isLogined) {
+            mNavAuthLogin.setVisibility(View.GONE);
+            mNavAuthLogout.setVisibility(View.VISIBLE);
+        } else {
+            mNavAuthLogin.setVisibility(View.VISIBLE);
+            mNavAuthLogout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        Log.wtf("onActivityResult", data.getStringExtra(getString(R.string.ci_session)));
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String ci_session = data.getStringExtra(getString(R.string.ci_session));
+                if (ci_session == null)
+                    prefs.edit().remove(getString(R.string.ci_session)).apply();
+                else
+                    prefs.edit().putString(getString(R.string.ci_session), ci_session).apply();
+                isLogined = (ci_session != null);
+                showOrHideLogInOut(isLogined);
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -121,18 +270,11 @@ public class MainActivity extends FragmentActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-//        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+//        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerLeftLayout);
 //        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
-            Log.i("drawer", position + ": " + navigationItems[position]);
-            selectItem(position);
-        }
-    }
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
         if (position == 0) // search
@@ -149,8 +291,11 @@ public class MainActivity extends FragmentActivity {
             intentPwcatsInfo();
 
 
-        mDrawerList.setItemChecked(position, true);
-        mDrawerLayout.closeDrawer(mDrawerList);
+//        mDrawerLeftLayout.setItemChecked(position, true);
+        mDrawerLayout.closeDrawer(mDrawerLeftLayout);
+    }
+    private void afterAnyNavClick() {
+        mDrawerLayout.closeDrawer(mDrawerLeftLayout);
     }
 
     private void showStarItemDetails(int stars) {
@@ -188,6 +333,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void showSearchFragment(boolean clear) {
+        setTitle(getString(R.string.nav_search));
         if (fragmentSearch == null)
             fragmentSearch = new SearchItemFragment();
 
