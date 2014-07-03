@@ -72,15 +72,30 @@
                 android:textSize="13sp"
                 android:gravity="center"/>
         </LinearLayout>
-        <TextView
+
+        <LinearLayout
+            android:id="@+id/priceAndExpandLayout"
+            android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="25"
-            android:id="@+id/textItemCostHi"
-            android:layout_gravity="center_horizontal"
-            android:textSize="13sp"
-            android:textColor="#ff43c9ff"
-            android:gravity="center_vertical|left"/>
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="4dp">
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textItemCostHi"
+                android:layout_gravity="center_horizontal"
+                android:textSize="13sp"
+                android:textColor="#ff43c9ff"
+                android:gravity="center_vertical|left"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="7sp"
+                android:layout_gravity="bottom|right"
+                android:text="@string/expand"/>
+        </LinearLayout>
     </LinearLayout>
 
     <TextView

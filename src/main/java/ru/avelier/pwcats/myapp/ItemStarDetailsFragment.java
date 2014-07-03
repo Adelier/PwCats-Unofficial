@@ -18,6 +18,7 @@ import ru.adelier.pw.PwItemCat;
 import ru.adelier.pw.PwItemCatDetailed;
 import ru.adelier.pw.PwcatsRequester;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class ItemStarDetailsFragment extends Fragment {
@@ -25,15 +26,18 @@ public class ItemStarDetailsFragment extends Fragment {
 
     private PwcatsRequester.Server server;
     private Integer stars;
+    private List<DownloadImageTask> downloadTasks;
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopDownloading();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        downloadTasks = new LinkedList<DownloadImageTask>();
     }
 
     @Override
@@ -42,10 +46,16 @@ public class ItemStarDetailsFragment extends Fragment {
         updateArguments();
     }
     public void updateArguments() {
+        stopDownloading();
         stars = getArguments().getInt(getString(R.string.pref_stars), -1);
         server = PwcatsRequester.Server.valueOf( getArguments().getString(getString(R.string.pref_server),
                 getResources().getStringArray(R.array.servers)[0]) );
         asynkFillViewWithAllRequestedNodes();
+    }
+    private void stopDownloading() {
+        for (DownloadImageTask task : downloadTasks)
+            task.cancel(true);
+        downloadTasks.clear();
     }
 
     /**
@@ -80,7 +90,6 @@ public class ItemStarDetailsFragment extends Fragment {
     private void fillViewWithNodes(List<PwItemCatDetailed> infos) {
         // remove old
         ViewGroup insertPoint = (ViewGroup)rootView.findViewById(R.id.scrolledLinearView);
-        insertPoint.removeAllViewsInLayout();
         // maybe there is nothing to fill with?
         if (infos == null || infos.isEmpty()) {
             LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -98,7 +107,6 @@ public class ItemStarDetailsFragment extends Fragment {
         // so there is. add them now
         for (PwItemCatDetailed info : infos) {
             add_item_node_star(info);
-            Log.d(this.toString(), "item info added " + info.toString());
         }
     }
 
@@ -110,6 +118,9 @@ public class ItemStarDetailsFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             rootView.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            // remove old
+            ViewGroup insertPoint = (ViewGroup)rootView.findViewById(R.id.scrolledLinearView);
+            insertPoint.removeAllViewsInLayout();
         }
 
         protected List<PwItemCatDetailed> doInBackground(Object... stars_server) {
@@ -130,8 +141,6 @@ public class ItemStarDetailsFragment extends Fragment {
     }
 
     public void add_item_node_star(PwItemCatDetailed itemInfo) {
-//        Log.d("adding", itemInfo.toString());
-
         LayoutInflater vi;
         try {
             vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -185,8 +194,8 @@ public class ItemStarDetailsFragment extends Fragment {
         catNameLayout.setMinimumWidth((int) (width * 0.47f));
         View locationLayout = v.findViewById(R.id.locationLayout);
         locationLayout.setMinimumWidth((int) (width * 0.17f));
-//        View textItemCostHi = v.findViewById(R.id.textItemCostHi);
-        textItemCostHi.setMinimumWidth((int) (width * 0.23f));
+        View priceAndExpandLayout = v.findViewById(R.id.priceAndExpandLayout);
+        priceAndExpandLayout.setMinimumWidth((int) (width * 0.23f));
 
 // insert into main view
         ViewGroup insertPoint = (ViewGroup) rootView.findViewById(R.id.scrolledLinearView);
