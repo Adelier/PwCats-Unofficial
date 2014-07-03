@@ -31,6 +31,12 @@ android:layout_height="match_parent">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
+        android:id="@+id/nav_profit"
+        android:text="@string/nav_profit"
+        android:textSize="20sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:id="@+id/nav_refine"
         android:text="@string/nav_refine"
         android:textSize="20sp"/>
@@ -51,12 +57,6 @@ android:layout_height="match_parent">
         android:layout_height="30dp"
         android:id="@+id/nav_3star"
         android:text="@string/nav_3star"
-        android:textSize="20sp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:id="@+id/nav_profit"
-        android:text="@string/nav_profit"
         android:textSize="20sp"/>
     <TextView
         android:layout_width="wrap_content"
