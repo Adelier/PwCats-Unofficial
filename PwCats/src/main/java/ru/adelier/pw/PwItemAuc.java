@@ -5,12 +5,14 @@ package ru.adelier.pw;
  */
 public class PwItemAuc extends PwItem {
 
-    private int lot_id;
-    private String upToTime;
+    protected int lot_id;
+    protected String upToTime;
 
     public PwItemAuc(int id, String name, String imageLink, int count, Integer priceLo, Integer priceHi, int lot_id, String upToTime) {
         super(id, name, imageLink, count, priceLo, priceHi);
 
+        if (this.getPriceHi() == 0)
+            this.priceHi = null;
         this.lot_id = lot_id;
         this.upToTime = upToTime;
     }

@@ -13,12 +13,12 @@ public class PwItem {
         this.priceHi = priceHi;
     }
 
-    private int id;
-    private String itemName;
-    private String desc;
-    private int count;
-    private Integer priceLo;
-    private Integer priceHi;
+    protected int id;
+    protected String itemName;
+    protected String desc;
+    protected int count;
+    protected Integer priceLo;
+    protected Integer priceHi;
 
     public int getId() {
         return id;
