@@ -27,54 +27,62 @@ android:layout_height="match_parent">
         android:layout_height="30dp"
         android:id="@+id/nav_search"
         android:text="@string/nav_search"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:id="@+id/nav_refine"
         android:text="@string/nav_refine"
         android:textSize="18sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:id="@+id/nav_1star"
         android:text="@string/nav_1star"
         android:textSize="18sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:id="@+id/nav_2star"
         android:text="@string/nav_2star"
         android:textSize="18sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:id="@+id/nav_3star"
         android:text="@string/nav_3star"
         android:textSize="18sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:id="@+id/nav_profit"
         android:text="@string/nav_profit"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:id="@+id/nav_pwcats"
         android:text="@string/nav_pwcats"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:id="@+id/nav_auth_login"
         android:text="@string/nav_auth_login"
         android:textSize="15sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="28dp"
@@ -82,6 +90,7 @@ android:layout_height="match_parent">
         android:text="@string/nav_auth_logout"
         android:visibility="gone"
         android:textSize="18sp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:textColor="#f0f0f0ff"/>
 </LinearLayout>
 </android.support.v4.widget.DrawerLayout>
