@@ -3,6 +3,8 @@ package ru.avelier.pwcats.myapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -15,6 +17,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import ru.avelier.pwcats.db.DbItemsHelper;
+import ru.avelier.pwcats.db.DbRecentItemsHelper;
 
 /**
  * Created by Adelier on 02.07.2014.
@@ -32,12 +36,24 @@ public class MainActivity extends FragmentActivity {
     private Fragment activeFragment;
     private SearchItemFragment fragmentSearch;
     private ItemStarDetailsFragment itemStarDetailsFragment;
-//    ...
+
+    public static DbItemsHelper items_db;
+    public static DbRecentItemsHelper recent_items_db;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        items_db.close();
+        recent_items_db.close();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        items_db = new DbItemsHelper(getApplicationContext());
+        recent_items_db = new DbRecentItemsHelper(getApplicationContext());
 
         navigationItems = getResources().getStringArray(R.array.navigation);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -190,6 +206,21 @@ public class MainActivity extends FragmentActivity {
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
+    }
+
+    public static String getItemNameById(int id) {
+        SQLiteDatabase db = MainActivity.items_db.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT name FROM items WHERE _id = ?", new String[]{id+""});
+        String name;
+        if (c.moveToFirst())
+            name = c.getString(0);
+        else
+            name = null;
+        c.close();
+        db.close();
+        if (name == null)
+            Log.w("null", "MainActivity.getItemNameById id = " + id + ", returns " + name);
+        return name;
     }
 
     @Override

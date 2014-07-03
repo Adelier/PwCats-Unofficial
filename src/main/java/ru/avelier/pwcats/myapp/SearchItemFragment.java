@@ -31,9 +31,6 @@ import java.util.List;
 public class SearchItemFragment extends Fragment {
 
     private ViewGroup rootView;
-
-    private DbItemsHelper items_db;
-    private DbRecentItemsHelper recent_items_db;
     private SharedPreferences prefs;
 
     private List<AsyncTask<String, Void, Bitmap>> loadIconTasks;
@@ -42,8 +39,6 @@ public class SearchItemFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        items_db.close();
-        recent_items_db.close();
     }
 
     /**
@@ -55,9 +50,6 @@ public class SearchItemFragment extends Fragment {
         Log.d(this.toString(), "onCreate()");
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-
-        items_db = new DbItemsHelper(getActivity().getApplicationContext());
-        recent_items_db = new DbRecentItemsHelper(getActivity().getApplicationContext());
 
         loadIconTasks = new LinkedList<AsyncTask<String, Void, Bitmap>>();
     }
@@ -129,7 +121,7 @@ public class SearchItemFragment extends Fragment {
         int recentCountLimit = prefs.getInt(getString(R.string.pref_recent_count), 30);
         List<Integer> res = new ArrayList<Integer>(recentCountLimit);
 
-        SQLiteDatabase db = recent_items_db.getReadableDatabase();
+        SQLiteDatabase db = MainActivity.recent_items_db.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT " + RecentItemsEntry.COL_RECENT_ID +
                 " FROM " + RecentItemsEntry.TABLE_NAME +
                 " ORDER BY " + RecentItemsEntry.COL_RECENT_DATE + " DESC" +
@@ -156,7 +148,7 @@ public class SearchItemFragment extends Fragment {
         }
 
         // process search
-        SQLiteDatabase db = items_db.getReadableDatabase();
+        SQLiteDatabase db = MainActivity.items_db.getReadableDatabase();
         Cursor c;
         try {
             // || things because of https://code.google.com/p/android/issues/detail?id=3153
@@ -193,7 +185,7 @@ public class SearchItemFragment extends Fragment {
     }
 
     private void add_item_line(int id){
-        add_item_line(id, getItemNameById(id));
+        add_item_line(id, MainActivity.getItemNameById(id));
     }
 
     private void add_item_line(final int id, final String itemName) {
@@ -226,17 +218,7 @@ public class SearchItemFragment extends Fragment {
 
 
     public void viewItemDetails(int id) {
-        showItemDetails(id, getItemNameById(id));
-    }
-
-    private String getItemNameById(int id) {
-        SQLiteDatabase db = items_db.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT name FROM items WHERE _id = ?", new String[]{id+""});
-        c.moveToFirst();
-        String name = c.getString(0);
-        c.close();
-        db.close();
-        return name;
+        showItemDetails(id, MainActivity.getItemNameById(id));
     }
 
     public void showItemDetails(int id, String itemName) {
@@ -246,7 +228,7 @@ public class SearchItemFragment extends Fragment {
         imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 // db recent
         Log.d(this.toString(), "inserting new recent id: " + id);
-        SQLiteDatabase db = recent_items_db.getWritableDatabase();
+        SQLiteDatabase db = MainActivity.recent_items_db.getWritableDatabase();
         db.execSQL("DELETE FROM " + RecentItemsEntry.TABLE_NAME +
                 " WHERE " + RecentItemsEntry.COL_RECENT_ID + " = " + id);
         db.execSQL("INSERT INTO " + RecentItemsEntry.TABLE_NAME +

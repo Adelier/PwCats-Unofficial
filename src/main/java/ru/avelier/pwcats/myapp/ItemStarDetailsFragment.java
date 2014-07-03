@@ -17,6 +17,7 @@ import android.widget.TextView;
 import ru.adelier.pw.PwItemCat;
 import ru.adelier.pw.PwItemCatDetailed;
 import ru.adelier.pw.PwcatsRequester;
+import ru.avelier.pwcats.db.DbItemsHelper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class ItemStarDetailsFragment extends Fragment {
     private void asynkFillViewWithAllRequestedNodes(){
         AsyncTask<Object, Void, List<PwItemCatDetailed>> asyncTask = new RetrievePwItemCatTask().execute(new Object[]{stars, server});
     }
-
+    LayoutInflater vi;
     private void fillViewWithNodes(List<PwItemCatDetailed> infos) {
         // remove old
         ViewGroup insertPoint = (ViewGroup)rootView.findViewById(R.id.scrolledLinearView);
@@ -104,7 +105,14 @@ public class ItemStarDetailsFragment extends Fragment {
             insertPoint.addView(v, insertPoint.getChildCount(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             return;
         }
+
         // so there is. add them now
+        try {
+            vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        } catch (NullPointerException e) {
+            Log.d(this.toString(), "can't get LayoutInflater");
+            return;
+        }
         for (PwItemCatDetailed info : infos) {
             add_item_node_star(info);
         }
@@ -141,13 +149,6 @@ public class ItemStarDetailsFragment extends Fragment {
     }
 
     public void add_item_node_star(PwItemCatDetailed itemInfo) {
-        LayoutInflater vi;
-        try {
-            vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        } catch (NullPointerException e) {
-            Log.d(this.toString(), "can't get LayoutInflater");
-            return;
-        }
         View v = vi.inflate(R.layout.item_details_node_stars, null);
 
 // fill in any details dynamically here
@@ -170,8 +171,11 @@ public class ItemStarDetailsFragment extends Fragment {
         textItemCostHi.setText( String.format("%,d", itemInfo.getPriceHi()) );
 
         final TextView textHtmlDesc = (TextView) v.findViewById(R.id.textHtmlDesc);
-        if (itemInfo.getDesc() != null)
-            textHtmlDesc.setText( Html.fromHtml(itemInfo.getDesc()) );
+        String realName = MainActivity.getItemNameById(itemInfo.getId());
+        String desc = itemInfo.getDesc();
+        if (realName != null)
+            desc = desc.replace(itemInfo.getItemName(), realName);
+        textHtmlDesc.setText(Html.fromHtml(desc));
 
         v.setOnClickListener(new View.OnClickListener() {
             @Override

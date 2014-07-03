@@ -1,6 +1,7 @@
 package ru.avelier.pwcats.db;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.*;
 import android.util.Log;
 import ru.avelier.pwcats.db.DbItemsContract.*;
@@ -112,7 +113,6 @@ public class DbItemsHelper extends SQLiteOpenHelper {
         }
         return database;
     }
-
 
     public void onCreate(SQLiteDatabase db) {
     }
