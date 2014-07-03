@@ -1,14 +1,25 @@
 package ru.adelier.pw;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.rmi.runtime.Log;
 
 public class PwcatsRequester {
 
@@ -75,16 +86,42 @@ public class PwcatsRequester {
         }
         return items;
     }
+
+    private static Document openDocument(String url, String ci_session) {
+        Cookie[] cookies = new Cookie[]{
+                new Cookie("pwcats.info", "ci_session", ci_session, "/", -1, false),
+        };
+        return openDocument(url, cookies);
+    }
+
     private static Document openDocument(String url) {
-        Document doc;
+        return openDocument(url, new Cookie[]{});
+    }
+
+    private static Document openDocument(String url, Cookie[] cookies) {
+//        System.out.println("openDocument " + url + "\n\t" + Arrays.toString(cookies));
+        HttpState state = new HttpState();
+        state.addCookies(cookies);
+        HttpMethod method = new GetMethod(url);
+
+        HttpClient http = new HttpClient();
+        http.getParams().setParameter(HttpClientParams.COOKIE_POLICY,
+                CookiePolicy.BROWSER_COMPATIBILITY);
+        http.setState(state);
+
+        InputStream responceStream;
         try {
-            doc = Jsoup.parse(new URL(url), 10000);
-        } catch (MalformedURLException e) {
-            // normally shouldn't be here
+            http.executeMethod(method);
+            responceStream = new BufferedInputStream( method.getResponseBodyAsStream(), 8*1024);
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+
+        Document doc;
+        try {
+            doc = Jsoup.parse(responceStream, "UTF-8", url);//parse(new URL(url), 10000);
         } catch (IOException e) {
-            // normally shouldn't be here
             e.printStackTrace();
             return null;
         }
@@ -185,9 +222,56 @@ public class PwcatsRequester {
         return items;
     }
 
+    // begin AUTHORISATION
+    public static String reqCiSession(String login, String pass) {
+        HttpState state = new HttpState();
+        HttpClient http = new HttpClient();
+        http.getParams().setParameter(HttpClientParams.COOKIE_POLICY,
+                CookiePolicy.BROWSER_COMPATIBILITY);
+//        http.getParams().setParameter(HttpClientParams.USER_AGENT,
+//                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 YaBrowser/14.5.1847.18774 Safari/537.36");
+        http.setState(state);
+
+        PostMethod  method = new PostMethod("http://pwcats.info/ulogin");
+        method.setRequestBody(new NameValuePair[]{
+                new NameValuePair("login", login),
+                new NameValuePair("pass", pass),
+        });
+        try {
+            http.executeMethod(method);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        String ci_session = null;
+        for (Cookie cookie : state.getCookies())
+            if (cookie.getName().equals("ci_session"))
+                ci_session = cookie.getValue();
+        return ci_session;
+    }
+    public static Boolean isValidCiSession(String ci_session) {
+        Document doc = openDocument("http://pwcats.info", ci_session);
+        Elements as = doc.getElementsByTag("a");
+        for (int i = 0; i < as.size(); i++) {
+            Element a = as.get(i);
+            if (a.text().equalsIgnoreCase("Вход"))
+                return false; // we can login -> we are NOT authorised now
+            else if (a.text().equalsIgnoreCase("Выход"))
+                return true; // we can logout -> we ARE authorised now
+        }
+        return null;
+    }
+    // end AUTHORISATION
+
     public static void main(String[] args) {
-        List<PwItemCatDetailed> items = itemsStars(Server.vega, 1);
-        for (PwItem item : items)
-            System.out.println(item.getDesc());
+        String ci_session_invalid = reqCiSession("asd", "assdasdasdasdasdd");
+        System.out.println(isValidCiSession(ci_session_invalid));
+        System.out.println("______________");
+        String ci_session_valid = reqCiSession("adelier","password");
+        System.out.println(isValidCiSession(ci_session_valid));
+//        List<PwItemCatDetailed> items = itemsStars(Server.vega, 1);
+//        for (PwItem item : items)
+//            System.out.println(item);
     }
 }
