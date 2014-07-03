@@ -43,6 +43,12 @@ public class ItemStarDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        stopDownloading();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         updateArguments();
