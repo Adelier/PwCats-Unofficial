@@ -264,6 +264,7 @@ public class SearchItemFragment extends Fragment {
         super.onResume();
         Log.d(this.toString(), "onResume()");
         getActivity().setTitle(R.string.search_activity_label);
+        search(((EditText)rootView.findViewById(R.id.editText)).getText().toString());
         ((MainActivity)getActivity()).setActiveFragment(this);
     }
 
