@@ -114,18 +114,21 @@ public class ItemAucDetailsFragment extends Fragment {
         textAucId.setText("#" + itemInfo.getLot_id());
 // price prepare
         int count = itemInfo.getCount();
-        int priceBidAll = itemInfo.getPriceLo();
-        int priceBuyoutAll = itemInfo.getPriceHi();
-        int priceBidX1 = priceBidAll / count;
-        int priceBuyoutX1 = priceBuyoutAll / count;
-        boolean bidBuyoutDiffers = (priceBidAll != priceBuyoutAll);
+        Integer priceBidAll = itemInfo.getPriceLo();
+        Integer priceBuyoutAll = itemInfo.getPriceHi();
+        Integer priceBidX1 = null;
+        if (priceBidAll != null)
+            priceBidX1 = priceBidAll / count;
+        Integer priceBuyoutX1 = null;
+        if (priceBuyoutAll != null)
+            priceBuyoutX1 = priceBuyoutAll / count;
+        boolean bidBuyoutDiffers = true;//((int)priceBidAll != (int)priceBuyoutAll);
 // price x1
+        TextView textPriceBidX1 = (TextView) v.findViewById(R.id.price_bid_x1);
         if(bidBuyoutDiffers) {
-            TextView textPriceBidX1 = (TextView) v.findViewById(R.id.price_bid_x1);
             textPriceBidX1.setVisibility(View.VISIBLE);
             textPriceBidX1.setText(String.format("1 x %,d", priceBidX1));
         }  else {
-            TextView textPriceBidX1 = (TextView) v.findViewById(R.id.price_bid_x1);
             textPriceBidX1.setVisibility(View.GONE);
         }
         TextView textPriceBuyoutX1 = (TextView) v.findViewById(R.id.price_buyout_x1);
@@ -146,7 +149,7 @@ public class ItemAucDetailsFragment extends Fragment {
             TextView textPriceBidAll = (TextView) v.findViewById(R.id.price_bid_all);
             textPriceBidAll.setVisibility(View.GONE);
             TextView textPriceBuyoutAll = (TextView) v.findViewById(R.id.price_buyout_all);
-            textPriceBidAll.setVisibility(View.GONE);
+            textPriceBuyoutAll.setVisibility(View.GONE);
         }
 // count
 //        TextView textItemCount = (TextView) v.findViewById(R.id.textItemCount);
