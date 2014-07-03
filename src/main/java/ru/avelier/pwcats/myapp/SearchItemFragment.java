@@ -223,9 +223,7 @@ public class SearchItemFragment extends Fragment {
 
     public void showItemDetails(int id, String itemName) {
 // hide keyboard
-        EditText editText = (EditText) rootView.findViewById(R.id.editText);
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        hideKeyboard();
 // db recent
         Log.d(this.toString(), "inserting new recent id: " + id);
         SQLiteDatabase db = MainActivity.recent_items_db.getWritableDatabase();
@@ -252,6 +250,12 @@ public class SearchItemFragment extends Fragment {
                 .commit();
     }
 
+    public void hideKeyboard() {
+        EditText editText = (EditText) rootView.findViewById(R.id.editText);
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -270,5 +274,8 @@ public class SearchItemFragment extends Fragment {
 
     public void clearQuery() {
         ((EditText)rootView.findViewById(R.id.editText)).setText("");
+    }
+    public String getQuery() {
+        return ((EditText)rootView.findViewById(R.id.editText)).getText().toString();
     }
 }

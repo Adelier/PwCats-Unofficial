@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/scrolledLinearView"
         android:divider="@drawable/mydivider"
-        android:dividerPadding="22dp"
+        android:dividerPadding="10dp"
         android:showDividers="middle">
 
         <ProgressBar

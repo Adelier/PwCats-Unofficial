@@ -1,5 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import java.util.List;
 
 public class ItemStarDetailsFragment extends Fragment {
     private ViewGroup rootView;
+    
+    Activity parentActivity;
 
     private PwcatsRequester.Server server;
     private Integer stars;
@@ -39,6 +42,7 @@ public class ItemStarDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parentActivity = getActivity();
         downloadTasks = new LinkedList<DownloadImageTask>();
     }
 
@@ -52,17 +56,21 @@ public class ItemStarDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateArguments();
+    }
+
+    private void updateTitle(int stars) {
         switch (stars) {
-            case 1: getActivity().setTitle(getString(R.string.nav_1star));
-            case 2: getActivity().setTitle(getString(R.string.nav_2star));
-            case 3: getActivity().setTitle(getString(R.string.nav_3star));
+            case 1: parentActivity.setTitle(getString(R.string.nav_1star)); break;
+            case 2: parentActivity.setTitle(getString(R.string.nav_2star)); break;
+            case 3: parentActivity.setTitle(getString(R.string.nav_3star)); break;
         }
     }
     public void updateArguments() {
         stopDownloading();
         stars = getArguments().getInt(getString(R.string.pref_stars), -1);
-        server = PwcatsRequester.Server.valueOf( getArguments().getString(getString(R.string.pref_server),
-                getResources().getStringArray(R.array.servers)[0]) );
+        server = PwcatsRequester.Server.valueOf(getArguments().getString(getString(R.string.pref_server),
+                getResources().getStringArray(R.array.servers)[0]));
+        updateTitle(stars);
         asynkFillViewWithAllRequestedNodes();
     }
     private void stopDownloading() {
@@ -77,8 +85,6 @@ public class ItemStarDetailsFragment extends Fragment {
     @Override
     public ViewGroup onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.item_details_cat);
-        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_stars, container, false);
 
         // load params from intent extras
         server = PwcatsRequester.Server.valueOf(getArguments().getString("server"));
@@ -91,6 +97,11 @@ public class ItemStarDetailsFragment extends Fragment {
             Log.wtf(this.toString(), "stars count not passed :(");
             return rootView;
         }
+        updateTitle(stars);
+
+
+//        setContentView(R.layout.item_details_cat);
+        rootView = (ViewGroup) inflater.inflate(R.layout.item_details_stars, container, false);
 
         asynkFillViewWithAllRequestedNodes();
         return rootView;
@@ -105,7 +116,7 @@ public class ItemStarDetailsFragment extends Fragment {
         ViewGroup insertPoint = (ViewGroup)rootView.findViewById(R.id.scrolledLinearView);
         // maybe there is nothing to fill with?
         if (infos == null || infos.isEmpty()) {
-            LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.message, null);
             int message_id;
             if (infos == null)
@@ -120,7 +131,7 @@ public class ItemStarDetailsFragment extends Fragment {
 
         // so there is. add them now
         try {
-            vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         } catch (NullPointerException e) {
             Log.d(this.toString(), "can't get LayoutInflater");
             return;
@@ -145,7 +156,7 @@ public class ItemStarDetailsFragment extends Fragment {
 
         protected List<PwItemCatDetailed> doInBackground(Object... stars_server) {
             try {
-                String ci_session = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                String ci_session = PreferenceManager.getDefaultSharedPreferences(parentActivity.getApplicationContext())
                         .getString(getString(R.string.ci_session), null);
                 infos = PwcatsRequester.itemsStars((PwcatsRequester.Server) (stars_server[1]), (Integer) stars_server[0],
                         ci_session);
@@ -205,14 +216,14 @@ public class ItemStarDetailsFragment extends Fragment {
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        parentActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
 //        View itemIcon = v.findViewById(R.id.itemIcon);
         itemIcon.setMinimumWidth((int) (width * 0.13f));
         View catNameLayout = v.findViewById(R.id.catNameLayout);
         catNameLayout.setMinimumWidth((int) (width * 0.47f));
         View locationLayout = v.findViewById(R.id.locationLayout);
-        locationLayout.setMinimumWidth((int) (width * 0.17f));
+        locationLayout.setMinimumWidth((int) (width * 0.20f));
         View priceAndExpandLayout = v.findViewById(R.id.priceAndExpandLayout);
         priceAndExpandLayout.setMinimumWidth((int) (width * 0.23f));
 

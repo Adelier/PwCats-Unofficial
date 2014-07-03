@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:divider="@drawable/mydivider"
-        android:dividerPadding="22dp"
+        android:dividerPadding="7dp"
         android:showDividers="middle">
         <ProgressBar
             style="?android:attr/progressBarStyleLarge"

@@ -4,16 +4,17 @@
                 android:id="@+id/item_node_layout"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp">
 
     <LinearLayout
         android:id="@+id/catNameLayout"
         android:orientation="vertical"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_weight="50"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="4dp">
+        android:layout_gravity="center"
+        android:gravity="center">
 
         <TextView
             android:layout_width="fill_parent"
@@ -22,7 +23,7 @@
             android:id="@+id/textCatTitle"
             android:layout_gravity="center"
             android:textColor="#ffffa54b"
-            android:textSize="13dp"
+            android:textSize="11sp"
             android:textIsSelectable="false"
             android:gravity="center"/>
         <TextView
@@ -32,7 +33,7 @@
             android:id="@+id/textCatNickname"
             android:layout_gravity="center_horizontal"
             android:textColor="#ffffffff"
-            android:textSize="13dp"
+            android:textSize="13sp"
             android:textIsSelectable="false"
             android:gravity="center"/>
     </LinearLayout>
@@ -41,10 +42,12 @@
         android:id="@+id/locationLayout"
         android:orientation="vertical"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_weight="15"
-        android:layout_marginRight="4dp"
-        android:layout_marginLeft="4dp">
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="3dp"
+        android:layout_gravity="center"
+        android:gravity="center">
 
         <TextView
             android:layout_width="fill_parent"
@@ -70,10 +73,12 @@
         android:id="@+id/itemCostLayout"
         android:orientation="vertical"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_weight="25"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_gravity="center"
+        android:gravity="center">
 
         <TextView
             android:layout_width="fill_parent"
@@ -98,14 +103,12 @@
 
     <TextView
         android:layout_width="0dp"
-        android:layout_height="fill_parent"
+        android:layout_height="40dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/textItemCount"
         android:layout_gravity="center_horizontal"
         android:textSize="13sp"
         android:layout_weight="10"
-        android:gravity="center"
-        android:layout_marginRight="15dp"/>
-
+        android:gravity="center"/>
 
 </LinearLayout>

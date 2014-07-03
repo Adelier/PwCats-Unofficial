@@ -1,5 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import ru.adelier.pw.PwcatsRequester;
 import java.util.List;
 
 public class ItemCatDetailsFragment extends Fragment {
+    private Activity parentActivity;
     private ViewGroup rootView;
 
     @Override
@@ -27,6 +29,7 @@ public class ItemCatDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parentActivity = getActivity();
     }
 
     /**
@@ -57,7 +60,7 @@ public class ItemCatDetailsFragment extends Fragment {
 
     private void fillViewWithNodes(List<PwItemCat> infos) {
         if (infos == null || infos.isEmpty()) {
-            LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.message, null);
             int message_id;
             if (infos == null)
@@ -84,7 +87,7 @@ public class ItemCatDetailsFragment extends Fragment {
         Exception exception = null;
         protected List<PwItemCat> doInBackground(Object... id_server) {
             try {
-                String ci_session = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                String ci_session = PreferenceManager.getDefaultSharedPreferences(parentActivity.getApplicationContext())
                         .getString(getString(R.string.ci_session), null);
                 infos = PwcatsRequester.itemsCat((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0], ci_session);
                 return infos;
@@ -105,7 +108,7 @@ public class ItemCatDetailsFragment extends Fragment {
     }
 
     public void add_item_node_cat(PwItemCat itemInfo) {
-        LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.item_details_node_cat, null);
 
 // fill in any details dynamically here
@@ -132,14 +135,14 @@ public class ItemCatDetailsFragment extends Fragment {
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        parentActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         View textItemCount = v.findViewById(R.id.textItemCount);
         textItemCount.setMinimumWidth((int) (width * 0.13f));
         View catNameLayout = v.findViewById(R.id.catNameLayout);
         catNameLayout.setMinimumWidth((int) (width * 0.47f));
         View locationLayout = v.findViewById(R.id.locationLayout);
-        locationLayout.setMinimumWidth((int) (width * 0.17f));
+        locationLayout.setMinimumWidth((int) (width * 0.20f));
         View itemCostLayout = v.findViewById(R.id.itemCostLayout);
         itemCostLayout.setMinimumWidth((int) (width * 0.23f));
 

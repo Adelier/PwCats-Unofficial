@@ -197,7 +197,7 @@ public class PwcatsRequester {
 
             String nickname = columns.get(2).text();
             String catTitle = columns.get(3).text();
-            String[] sCoord = columns.get(4).text().split(" ");
+            String[] sCoord = columns.get(4).text().trim().split(" ");
             int [] coord = {Integer.parseInt(sCoord[0]), Integer.parseInt(sCoord[1])};
             PwItemCat.Location location = PwItemCat.Location.valueOf( columns.get(5).text() );
 

@@ -82,6 +82,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_search));
+                fragmentSearch.hideKeyboard();
                 showSearchFragment(true);
                 hideNavDrawer();
             }
@@ -90,6 +91,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_refine));
+                fragmentSearch.hideKeyboard();
 //                showSearchFragment(true); TODO
                 hideNavDrawer();
             }
@@ -98,6 +100,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_profit));
+                fragmentSearch.hideKeyboard();
 //                showSearchFragment(true); TODO
                 hideNavDrawer();
             }
@@ -106,6 +109,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_1star));
+                fragmentSearch.hideKeyboard();
                 showStarItemDetails(1);
                 hideNavDrawer();
             }
@@ -114,6 +118,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_2star));
+                fragmentSearch.hideKeyboard();
                 showStarItemDetails(2);
                 hideNavDrawer();
             }
@@ -122,6 +127,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_3star));
+                fragmentSearch.hideKeyboard();
                 showStarItemDetails(3);
                 hideNavDrawer();
             }
@@ -136,6 +142,7 @@ public class MainActivity extends FragmentActivity {
         mNavAuthLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fragmentSearch.hideKeyboard();
                 authLogout();
 //                hideNavDrawer();
             }
@@ -144,6 +151,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_pwcats));
+                fragmentSearch.hideKeyboard();
                 intentPwcatsInfo();
                 hideNavDrawer();
             }
@@ -320,11 +328,9 @@ public class MainActivity extends FragmentActivity {
             itemStarDetailsFragment.updateArguments();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction t = fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, itemStarDetailsFragment);
-        if (activeFragment == fragmentSearch)
-            t = t.addToBackStack(null);
-        t.commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, itemStarDetailsFragment)
+                .commit();
         activeFragment = itemStarDetailsFragment;
     }
 
@@ -373,5 +379,19 @@ public class MainActivity extends FragmentActivity {
     public void setTitle(CharSequence title) {
         mTitle = title;
         getActionBar().setTitle(mTitle);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(mDrawerLeftLayout))
+            mDrawerLayout.closeDrawer(mDrawerLeftLayout);
+        else if (activeFragment == fragmentSearch && fragmentSearch.isResumed()) {
+            if (fragmentSearch.getQuery().equals(""))
+                finish();
+            else
+                fragmentSearch.clearQuery();
+        } else
+            showSearchFragment(false);
+//        super.onBackPressed();
     }
 }

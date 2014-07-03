@@ -1,5 +1,6 @@
 package ru.avelier.pwcats.myapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class ItemAucDetailsFragment extends Fragment {
 
+    private Activity parentActivity;
     private ViewGroup rootView;
 
     @Override
@@ -29,6 +31,7 @@ public class ItemAucDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parentActivity = getActivity();
     }
 
     /**
@@ -58,7 +61,7 @@ public class ItemAucDetailsFragment extends Fragment {
 
     private void fillViewWithNodes(List<PwItemAuc> infos) {
         if (infos == null || infos.isEmpty()) {
-            LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = vi.inflate(R.layout.message, null);
             int message_id;
             if (infos == null)
@@ -85,7 +88,7 @@ public class ItemAucDetailsFragment extends Fragment {
         Exception exception = null;
         protected List<PwItemAuc> doInBackground(Object... id_server) {
             try {
-                String ci_session = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                String ci_session = PreferenceManager.getDefaultSharedPreferences(parentActivity.getApplicationContext())
                                             .getString(getString(R.string.ci_session), null);
                 infos = PwcatsRequester.itemsAuc((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0], ci_session);
                 return infos;
@@ -106,7 +109,7 @@ public class ItemAucDetailsFragment extends Fragment {
     }
 
     public void add_item_node_cat(PwItemAuc itemInfo) {
-        LayoutInflater vi = (LayoutInflater) getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) parentActivity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.item_details_node_auc, null);
 
 // lot id
@@ -161,7 +164,7 @@ public class ItemAucDetailsFragment extends Fragment {
 
 // sizes
         DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        parentActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int width = metrics.widthPixels;
         textAucId.setMinimumWidth((int) (width * 0.20f));
         View priceX1Layout = v.findViewById(R.id.priceX1Layout);
