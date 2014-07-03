@@ -83,7 +83,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_search));
                 showSearchFragment(true);
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNavRefine.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_refine));
 //                showSearchFragment(true); TODO
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNavProfit.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_profit));
 //                showSearchFragment(true); TODO
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNav1star.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +107,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_1star));
                 showStarItemDetails(1);
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNav2star.setOnClickListener(new View.OnClickListener() {
@@ -115,7 +115,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_2star));
                 showStarItemDetails(2);
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNav3star.setOnClickListener(new View.OnClickListener() {
@@ -123,21 +123,21 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_3star));
                 showStarItemDetails(3);
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNavAuthLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 authLogin();
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
         mNavAuthLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 authLogout();
-//                afterAnyNavClick();
+//                hideNavDrawer();
             }
         });
         mNavPwcats.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +145,7 @@ public class MainActivity extends FragmentActivity {
             public void onClick(View v) {
                 setTitle(getString(R.string.nav_pwcats));
                 intentPwcatsInfo();
-                afterAnyNavClick();
+                hideNavDrawer();
             }
         });
 
@@ -294,7 +294,7 @@ public class MainActivity extends FragmentActivity {
 //        mDrawerLeftLayout.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerLeftLayout);
     }
-    private void afterAnyNavClick() {
+    private void hideNavDrawer() {
         mDrawerLayout.closeDrawer(mDrawerLeftLayout);
     }
 
