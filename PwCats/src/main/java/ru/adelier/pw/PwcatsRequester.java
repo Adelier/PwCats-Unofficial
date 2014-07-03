@@ -100,7 +100,7 @@ public class PwcatsRequester {
         HttpMethod method = new GetMethod(url);
 
         HttpClient http = new HttpClient();
-        http.getParams().setParameter(HttpClientParams.USER_AGENT, "HttpClient from Pwcats for Android. skype:adelier11");
+// won't work //        http.getParams().setParameter(HttpClientParams.USER_AGENT, "HttpClient from Pwcats for Android. skype:adelier11");
         http.getParams().setParameter(HttpClientParams.COOKIE_POLICY,
                 CookiePolicy.BROWSER_COMPATIBILITY);
         http.setState(state);
