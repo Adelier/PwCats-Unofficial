@@ -3,6 +3,7 @@ package ru.avelier.pwcats.myapp;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -83,7 +84,9 @@ public class ItemCatDetailsFragment extends Fragment {
         Exception exception = null;
         protected List<PwItemCat> doInBackground(Object... id_server) {
             try {
-                infos = PwcatsRequester.itemsCat((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0]);
+                String ci_session = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                        .getString(getString(R.string.ci_session), null);
+                infos = PwcatsRequester.itemsCat((PwcatsRequester.Server)(id_server[1]), (Integer)id_server[0], ci_session);
                 return infos;
             } catch (Exception e) {
                 exception = e;

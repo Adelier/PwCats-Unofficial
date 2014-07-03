@@ -3,11 +3,7 @@ package ru.adelier.pw;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.httpclient.*;
@@ -19,7 +15,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.rmi.runtime.Log;
 
 public class PwcatsRequester {
 
@@ -48,9 +43,9 @@ public class PwcatsRequester {
         return String.format(pwcatsUrlFormat, server);
     }
 
-    public static List<PwItemCat> itemsCat(Server server, int id) {
+    public static List<PwItemCat> itemsCat(Server server, int id, String ci_session) {
         List<PwItemCat> items = new ArrayList<PwItemCat>();
-        Document doc = openDocument(formatPwcatsCatUrl(server.name(), id));
+        Document doc = openDocument(formatPwcatsCatUrl(server.name(), id), ci_session);
         if (doc == null)
             return items;
 
@@ -88,16 +83,14 @@ public class PwcatsRequester {
     }
 
     private static Document openDocument(String url, String ci_session) {
-        if (ci_session == null)
-            return openDocument(url);
-        Cookie[] cookies = new Cookie[]{
-                new Cookie("pwcats.info", "ci_session", ci_session, "/", -1, false),
-        };
+        Cookie[] cookies;
+        if (ci_session != null)
+            cookies = new Cookie[]{
+                    new Cookie("pwcats.info", "ci_session", ci_session, "/", -1, false),
+            };
+        else
+            cookies = new Cookie[]{};
         return openDocument(url, cookies);
-    }
-
-    private static Document openDocument(String url) {
-        return openDocument(url, new Cookie[]{});
     }
 
     private static Document openDocument(String url, Cookie[] cookies) {
@@ -129,9 +122,9 @@ public class PwcatsRequester {
         }
         return doc;
     }
-    public static List<PwItemAuc> itemsAuc(Server server, int id) {
+    public static List<PwItemAuc> itemsAuc(Server server, int id, String ci_session) {
         List<PwItemAuc> items = new ArrayList<PwItemAuc>();
-        Document doc = openDocument(formatPwcatsAucUrl(server.name(), id));
+        Document doc = openDocument(formatPwcatsAucUrl(server.name(), id), ci_session);
         if (doc == null)
             return items;
 
@@ -178,11 +171,11 @@ public class PwcatsRequester {
 		}
 	}
 
-    public static List<PwItemCatDetailed> itemsStars(Server server, int starsCount) {
+    public static List<PwItemCatDetailed> itemsStars(Server server, int starsCount, String ci_session) {
         if (starsCount < 1 || starsCount > 3)
             throw new IllegalArgumentException("starsCount should be in {1,2,3}");
         List<PwItemCatDetailed> items = new ArrayList<PwItemCatDetailed>(70);
-        Document doc = openDocument(formatItemStarsUrl(server.name(), starsCount));
+        Document doc = openDocument(formatItemStarsUrl(server.name(), starsCount), ci_session);
         if (doc == null)
             return items;
 

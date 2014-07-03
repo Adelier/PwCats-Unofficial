@@ -14,4 +14,7 @@
     <string name="pref_recent_count">recent_count</string>
     <string name="pref_stars">stars</string>
     <string name="expand">развернуть</string>
+
+    <!-- SharedPreferences names -->
+    <string name="ci_session">ci_session</string>
 </resources>

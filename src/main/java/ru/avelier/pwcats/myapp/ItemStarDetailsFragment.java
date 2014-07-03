@@ -3,6 +3,7 @@ package ru.avelier.pwcats.myapp;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -133,7 +134,10 @@ public class ItemStarDetailsFragment extends Fragment {
 
         protected List<PwItemCatDetailed> doInBackground(Object... stars_server) {
             try {
-                infos = PwcatsRequester.itemsStars((PwcatsRequester.Server) (stars_server[1]), (Integer) stars_server[0]);
+                String ci_session = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext())
+                        .getString(getString(R.string.ci_session), null);
+                infos = PwcatsRequester.itemsStars((PwcatsRequester.Server) (stars_server[1]), (Integer) stars_server[0],
+                        ci_session);
                 return infos;
             } catch (Exception e) {
                 exception = e;
